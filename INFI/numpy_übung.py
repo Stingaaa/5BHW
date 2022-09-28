@@ -28,7 +28,7 @@ print("Standardabweichung: " + str(numpy.std(arr)))
 print()
 
 print("2.2:")
-print(numpy.mean(arr) - numpy.std(arr)*2, numpy.mean(arr) + numpy.std(arr)*2)
+print("Im Bereich zwischen " + str(numpy.mean(arr) - numpy.std(arr)*2) + " und " + str(numpy.mean(arr) + numpy.std(arr)*2) + " befinden sich 95% aller Werte!")
 print()
 
 print("2.3:")
