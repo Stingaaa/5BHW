@@ -28,8 +28,7 @@ def printZiehung():
         
 def printStatistics():
     print(dictStatistics)
-    
-    
+        
 def Ziehungen(anz):
     while anz > 0:
         initArr()
@@ -39,14 +38,14 @@ def Ziehungen(anz):
             x+=1
             rand = random.randint(1, 45)
             arrZiehung[len(arrZiehung)-x], arrZiehung[rand-1] = arrZiehung[rand-1], arrZiehung[len(arrZiehung)-x]
-            if(anz > 0):
-                dictStatistics[rand] = dictStatistics[rand] + 1
+            dictStatistics[rand] = dictStatistics[rand] + 1
+
+initStatistics()
         
 print("Einfache Ziehung:")
 Ziehungen(1)
 printZiehung()
 
-initStatistics()
 anzZiehungen = input("Wie oft soll gezogen werden: ")
 print(anzZiehungen + " Ziehungen:")
 Ziehungen(int(anzZiehungen))
