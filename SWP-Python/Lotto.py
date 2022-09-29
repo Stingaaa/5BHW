@@ -29,7 +29,7 @@ def printZiehung():
 def printStatistics():
     print(dictStatistics)
         
-def Ziehungen(anz):
+def ziehungen(anz):
     while anz > 0:
         initArr()
         anz -= 1
@@ -43,10 +43,10 @@ def Ziehungen(anz):
 initStatistics()
         
 print("Einfache Ziehung:")
-Ziehungen(1)
+ziehungen(1)
 printZiehung()
 
 anzZiehungen = input("Wie oft soll gezogen werden: ")
 print(anzZiehungen + " Ziehungen:")
-Ziehungen(int(anzZiehungen))
+ziehungen(int(anzZiehungen))
 printStatistics()
