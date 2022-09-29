@@ -30,12 +30,11 @@ def ziehungen(anz):
         initArr()
         for x in range(1,7):
             rand = random.randint(minVal, maxVal)
-            arrZiehung[len(arrZiehung)-x], arrZiehung[rand-1] = arrZiehung[rand-1], arrZiehung[len(arrZiehung)-x]
+            arrZiehung[len(arrZiehung)-x], arrZiehung[rand-minVal-1] = arrZiehung[rand-minVal-1], arrZiehung[len(arrZiehung)-x]
             dictStatistics[rand] = dictStatistics[rand] + 1
 
-
-minVal = int(input("Min: "))
-maxVal = int(input("Max: "))
+minVal = int(input("Minimum Value: "))
+maxVal = int(input("Maximum Value: "))
 initStatistics()
         
 print("Einfache Ziehung:")
