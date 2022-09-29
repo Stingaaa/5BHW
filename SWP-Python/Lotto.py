@@ -2,18 +2,20 @@ import random
 
 arrZiehung = []
 dictStatistics = {}
+minVal = 0
+maxVal = 0
 
 def initArr():
     global arrZiehung
     arrZiehung = []
     x = 0
-    while x < 45:
+    while x < maxVal:
         x += 1
         arrZiehung.append(x)
         
 def initStatistics():
-    x = 0
-    while x < 45:
+    x = minVal-1
+    while x < maxVal:
         x += 1
         dictStatistics[x] = 0
         
@@ -36,10 +38,13 @@ def ziehungen(anz):
         x = 0
         while x < 6:
             x+=1
-            rand = random.randint(1, 45)
+            rand = random.randint(minVal, maxVal)
             arrZiehung[len(arrZiehung)-x], arrZiehung[rand-1] = arrZiehung[rand-1], arrZiehung[len(arrZiehung)-x]
             dictStatistics[rand] = dictStatistics[rand] + 1
 
+
+minVal = int(input("Min: "))
+maxVal = int(input("Max: "))
 initStatistics()
         
 print("Einfache Ziehung:")
