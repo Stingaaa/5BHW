@@ -1,47 +1,45 @@
 import random
 
-arrZiehung = []
-dictStatistics = {}
-minVal = 0
-maxVal = 0
-
 def initArr():
-    global arrZiehung
     arrZiehung = []
     for x in range(minVal, maxVal+1):
         arrZiehung.append(x)
+    return arrZiehung
         
 def initStatistics():
+    dictStatistics = {}
     for x in range(minVal, maxVal+1):
         dictStatistics[x] = 0
+    return dictStatistics
         
-def printZiehung():
+def printZiehung(arr):
     for x in range(1,7):
         if(x < 6):
-            print(arrZiehung[len(arrZiehung)-x], end = " - ")
+            print(arr[len(arr)-x], end = " - ")
         else:
-            print(arrZiehung[len(arrZiehung)-x])
+            print(arr[len(arr)-x])
         
-def printStatistics():
-    print(dictStatistics)
+def printStatistics(dict):
+    print(dict)
         
-def ziehungen(anz):
+def ziehungen(anz, arr, dict):
     for i in range(anz):
-        initArr()
         for x in range(1,7):
             rand = random.randint(minVal, maxVal)
-            arrZiehung[len(arrZiehung)-x], arrZiehung[rand-minVal-1] = arrZiehung[rand-minVal-1], arrZiehung[len(arrZiehung)-x]
-            dictStatistics[rand] = dictStatistics[rand] + 1
+            arr[len(arr)-x], arr[rand-minVal-1] = arr[rand-minVal-1], arr[len(arr)-x]
+            dict[rand] = dict[rand] + 1
+    if anz == 1:
+        return arr 
+    return dict
 
-minVal = int(input("Minimum Value: "))
-maxVal = int(input("Maximum Value: "))
-initStatistics()
-        
-print("Einfache Ziehung:")
-ziehungen(1)
-printZiehung()
+if __name__ == '__main__':
 
-anzZiehungen = input("Wie oft soll gezogen werden: ")
-print(anzZiehungen + " Ziehungen:")
-ziehungen(int(anzZiehungen))
-printStatistics()
+    minVal = int(input("Minimum Value: "))
+    maxVal = int(input("Maximum Value: "))
+    
+    print("Einfache Ziehung:")
+    printZiehung(ziehungen(1, initArr(), initStatistics()))
+
+    anzZiehungen = input("Wie oft soll gezogen werden: ")
+    print(anzZiehungen + " Ziehungen:")
+    printStatistics(ziehungen(int(anzZiehungen), initArr(), initStatistics()))
