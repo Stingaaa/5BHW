@@ -24,6 +24,7 @@ def printStatistics(dict):
         
 def ziehungen(mM, anz, arr, dict):
     for i in range(anz):
+        print(arr)
         for x in range(1,7):
             rand = random.randint(mM[0], mM[1])
             arr[len(arr)-x], arr[rand-mM[0]-1] = arr[rand-mM[0]-1], arr[len(arr)-x]
