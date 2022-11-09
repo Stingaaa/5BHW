@@ -81,9 +81,13 @@ def checkHand(cardsUsed, showCards, statistic):
 
 def pokerStatistic(count):
     statistic = generateStatistic()
+    statisticP = generateStatistic()
+    keys = list(statistic)
     for i in range(count):
         checkHand(pickCards(generateCards()), False, statistic)
-    return statistic
+    for i in range(len(statistic)):
+        statisticP[keys[i]] = statistic[keys[i]]/count*100
+    return str(statistic) + "\n\n" + str(statisticP)
 
 if __name__ == '__main__':
     print("---------------------------------------------------------")
