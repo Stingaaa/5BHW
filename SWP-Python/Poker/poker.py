@@ -5,14 +5,8 @@ def generateStatistic():
     return s
 def generateCards():
     cards = []
-    cardType = ["Clubs", "Diamonds", "Hearts", "Spades"]
-    higherRanking = ["Jack", "Queen","King", "Ace"]
-    for i in range(0,4):
-        for j in range (2,15):
-            if j > 10:
-                cards.append(higherRanking[j-11] + " of " + cardType[i])
-            else:
-                cards.append(str(j) + " of " + cardType[i])
+    for i in range(0,52):
+        cards.append(i)
     return cards
 
 def pickCards(cards):
@@ -21,122 +15,78 @@ def pickCards(cards):
         cards[len(cards)-i], cards[rand] = cards[rand], cards[len(cards)-i]
     return cards[len(cards)-5:len(cards)]
 
-def splitCard(card):
-    return card.split(" of ")
-
-def splitCardsToVals(card):
-    cards = []
-    for i in range(len(card)):
-        cards.append(card[i].split(" of ")[0])
+def sortToLowest(cards):
+    for i in range(len(cards)):
+        for j in range(len(cards)-1):
+            if (cards[i]%13<cards[j]%13):
+                cards[i], cards[j] = cards[j], cards[i]
     return cards
 
-def checkHand(cardsUsed, showCards):
+def checkHand(cardsUsed, showCards, statistic):
     if showCards == True:
         print(cardsUsed)
-    cardsToNumbers = []
-    higherRanking = ["Jack", "Queen", "King", "Ace"]
-    for i in range(len(cardsUsed)):
-        val = cardsUsed[i].split(" of ")
-        for j in range(len(higherRanking)):
-            if(higherRanking[j] in str(val[0])):
-                val[0] = j+11
-        cardsToNumbers.append(str(val[0]) + " of " + val[1])
+     
+    cardsSorted = sortToLowest(cardsUsed)
+    straight = False
     
-    types = ["Clubs", "Diamonds", "Hearts", "Spades"]
-    for i in range(0,4):
-        count = 0
-        for j in range(0,5):
-            if(splitCardsToVals(cardsToNumbers).__contains__(str(j+10)) and splitCard(cardsToNumbers[j])[1] == types[i]):
-                count += 1
-        if count == 5:
-            statistic["Royal Flush"] += 1
-            return #"You have a royal flush in your hand!"
-    
-    for i in range(0,4):
-        for j in range(2,11):
-            count1 = 0
-            count2 = 0
-            for k in range(0,5):
-                if(splitCardsToVals(cardsToNumbers).__contains__(str(j+k)) and splitCard(cardsToNumbers[k])[1] == types[i]):
-                    count1 += 1
-                    count2 += 1
-            if count1 == 5 and count2 == 5:
-                statistic["Straight Flush"] += 1
-                return #"You have a straight flush in your hand!"
-    
+    if(cardsSorted[0]%13+4 == cardsSorted[1]%13+3 == cardsSorted[2]%13+2 == cardsSorted[3]%13+1 == cardsSorted[4]%13):
+        if(int(cardsUsed[0]/13) == int(cardsUsed[1]/13) == int(cardsUsed[2]/13) == int(cardsUsed[3]/13) == int(cardsUsed[4]/13) and cardsSorted[4]-cardsSorted[0]<13):
+            if(cardsSorted[0]%13 == 9):
+                statistic["Royal Flush"] += 1
+                return #"Royal Flush"
+            statistic["Straight Flush"] += 1
+            return #"Straight Flush"
+        straight = True
+            
     for i in range(0,2):
-        for j in range(1+i,3):
-            for k in range(1+j,4):
-                for l in range(1+k,5):
-                    if(int(splitCard(cardsToNumbers[i])[0]) == int(splitCard(cardsToNumbers[j])[0]) == int(splitCard(cardsToNumbers[k])[0]) == int(splitCard(cardsToNumbers[l])[0])):
-                        statistic["Four of a kind"] += 1
-                        return #"There are four " + splitCard(cardsToNumbers[i])[0] + "s in your hand!"
+        if(cardsSorted[i]%13 == cardsSorted[i+1]%13 == cardsSorted[i+2]%13 == cardsSorted[i+3]%13):
+            statistic["Four of a kind"] += 1
+            return #"There are four " + splitCard(cardsToNumbers[i])[0] + "s in your hand!"
     
     threeOfAKind = 0
     toak = False
     for i in range(0,3):
-        for j in range(1+i,4):
-            for k in range(1+j,5):
-                if(int(splitCard(cardsToNumbers[i])[0]) == int(splitCard(cardsToNumbers[j])[0]) == int(splitCard(cardsToNumbers[k])[0])):
-                    threeOfAKind = int(splitCard(cardsToNumbers[i])[0])
-                    toak = True
-                    for l in range(len(cardsUsed)):
-                        for m in range(l+1, len(cardsUsed)):
-                            if(int(splitCard(cardsToNumbers[l])[0]) == int(splitCard(cardsToNumbers[m])[0]) and not int(splitCard(cardsToNumbers[l])[0]) == threeOfAKind):
-                                statistic["Full House"] += 1
-                                return #"You have a full house of " + splitCard(cardsToNumbers[i])[0] + "s in " + str(threeOfAKind) + "s in your hand!"
-                                print("asd")
+        if(cardsSorted[i]%13 == cardsSorted[i+1]%13 == cardsSorted[i+2]%13):
+            threeOfAKind = cardsSorted[i]
+            valsUnused = [0, 1, 2, 3, 4]
+            valsUnused.remove(i), valsUnused.remove(i+1), valsUnused.remove(i+2)
+            toak = True
+            if(cardsSorted[valsUnused[0]]%13 == cardsSorted[valsUnused[1]]%13 and not cardsSorted[valsUnused[0]]%13 == threeOfAKind):
+                statistic["Full House"] += 1
+                return "Full House"#You have a full house of " + splitCard(cardsToNumbers[i])[0] + "s in " + str(threeOfAKind) + "s in your hand!"
 
     if toak == True:
         statistic["Three of a kind"] += 1
         return #"There are three " + threeOfAKind + "s in your hand!"
+
+    if(int(cardsUsed[0]/13) == int(cardsUsed[1]/13) == int(cardsUsed[2]/13) == int(cardsUsed[3]/13) == int(cardsUsed[4]/13) and cardsSorted[4]-cardsSorted[0]<13):
+        statistic["Flush"] += 1
+        return #"You have a flush in your hand!"
+                
+    if(straight == True):
+        statistic["Straight"] += 1
+        return #"You have a straight in your hand!"
     
     for i in range(0,4):
-        count = 0
-        for j in range(0,5):
-            if(splitCard(cardsUsed[j])[1] == types[i]):
-                count += 1
-        if count == 5:
-            statistic["Flush"] += 1
-            return #"You have a flush in your hand!"
+        if(cardsSorted[i]%13 == cardsSorted[i+1]%13):
+            for j in range(i+2,4):
+                if(cardsSorted[j]%13 == cardsSorted[j+1]%13):
+                    statistic["Two Pair"] += 1
+                    return #"Two Pairs"
+            statistic["Pair"] += 1 
+            return #"Pair" 
     
-    for i in range(2,11):
-        count = 0
-        for j in range(0,5):
-            if(splitCardsToVals(cardsToNumbers).__contains__(str(i+j))):
-                count += 1
-        if count == 5:
-            statistic["Straight"] += 1
-            return #"You have a straight in your hand!"
-    
-    pairs = []
-    for i in range(len(cardsUsed)):
-        for j in range(i+1, len(cardsUsed)):
-            if(int(splitCard(cardsToNumbers[i])[0]) == int(splitCard(cardsToNumbers[j])[0])):
-                pairs.append(splitCard(cardsUsed[i])[0])
-    if len(pairs) == 1:
-        statistic["Pair"] += 1
-        return #"There is a pair of " + pairs[0] + "'s in your hand!"
-    if len(pairs) == 2:
-        statistic["Two Pair"] += 1
-        return #"There are pairs of " + pairs[0] + "'s and " + pairs[1] + "'s in your hand!"
-    
-    highest = 0
-    for i in range(1, len(cardsUsed)):
-        vals = splitCard(cardsToNumbers[i])
-        if(int(splitCard(cardsToNumbers[highest])[0]) < int(vals[0])):
-            highest = i
     statistic["Highest Number"] += 1
     return #"Highest Card in your hand is a " +  cardsUsed[highest]
 
-if __name__ == '__main__':
+def pokerStatistic(count):
     statistic = generateStatistic()
-    #print(generateCards())
-    #print("---------------------------------------------------------")
-    #print(pickCards(generateCards()))
-    #print("---------------------------------------------------------")
-    print(checkHand(pickCards(generateCards()), True))
+    for i in range(count):
+        checkHand(pickCards(generateCards()), False, statistic)
+    return statistic
+
+if __name__ == '__main__':
     print("---------------------------------------------------------")
-    for i in range(100000):
-        checkHand(pickCards(generateCards()), False)
-    print(statistic)
+    print(checkHand(pickCards(generateCards()), True, generateStatistic()))
+    print("---------------------------------------------------------")
+    print(pokerStatistic(100000))
