@@ -3,6 +3,7 @@ import random
 def generateStatistic():
     s = {"Royal Flush":0, "Straight Flush":0, "Four of a kind":0, "Full House":0, "Flush":0, "Straight":0, "Three of a kind":0, "Two Pair":0, "Pair":0, "Highest Number":0}
     return s
+
 def generateCards():
     cards = []
     for i in range(0,52):
@@ -29,9 +30,9 @@ def checkHand(cardsUsed, showCards, statistic):
     cardsSorted = sortToLowest(cardsUsed)
     straight = False
     
-    if(cardsSorted[0]%13+4 == cardsSorted[1]%13+3 == cardsSorted[2]%13+2 == cardsSorted[3]%13+1 == cardsSorted[4]%13):
+    if(cardsSorted[0]%13+4 == cardsSorted[1]%13+3 == cardsSorted[2]%13+2 == cardsSorted[3]%13+1 and cardsSorted[0]%13+4 == cardsSorted[4]%13 or cardsSorted[0]%13 == cardsSorted[4]%13-12 and cardsSorted[0]%13):
         if(int(cardsUsed[0]/13) == int(cardsUsed[1]/13) == int(cardsUsed[2]/13) == int(cardsUsed[3]/13) == int(cardsUsed[4]/13) and cardsSorted[4]-cardsSorted[0]<13):
-            if(cardsSorted[0]%13 == 9):
+            if(cardsSorted[0]%13 == 8):
                 statistic["Royal Flush"] += 1
                 return #"Royal Flush"
             statistic["Straight Flush"] += 1
@@ -83,14 +84,17 @@ def pokerStatistic(count):
     statistic = generateStatistic()
     statisticP = generateStatistic()
     keys = list(statistic)
-    for i in range(count):
+    for i in range(int(count)):
         checkHand(pickCards(generateCards()), False, statistic)
     for i in range(len(statistic)):
-        statisticP[keys[i]] = statistic[keys[i]]/count*100
+        statisticP[keys[i]] = statistic[keys[i]]/int(count)*100
     return str(statistic) + "\n\n" + str(statisticP)
 
-if __name__ == '__main__':
+def main():
     print("---------------------------------------------------------")
     print(checkHand(pickCards(generateCards()), True, generateStatistic()))
     print("---------------------------------------------------------")
-    print(pokerStatistic(100000))
+    print(pokerStatistic(input("Ziehungen: ")))
+
+if __name__ == '__main__':
+    main()
