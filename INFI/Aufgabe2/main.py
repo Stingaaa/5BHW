@@ -47,14 +47,14 @@ plt.boxplot([mean_temp_1979, mean_temp_1989, mean_temp_1999, mean_temp_20092, me
 plt.xlabel("Jahr")
 plt.xticks([1,2,3,4,5], ["1979", "1989", "1999", "2009", "2019"])
 plt.ylabel("Temperatur")
-plt.savefig("Task_1-1.png")
+plt.savefig("INFI\Aufgabe2\pics\Task_1-1.png")
 plt.show()
 
 #1.2
 plt.plot(mean_temp_20192, "r.")
 plt.xlabel("Tag")
 plt.ylabel("Temperatur")
-plt.savefig("Task_1-2.png")
+plt.savefig("INFI\Aufgabe2\pics\Task_1-2.png")
 plt.show()
 
 #1.3
@@ -71,7 +71,7 @@ quant_2019 = np.quantile(mean_temp_20192, 0.5)
 plt.plot(["1979", "1989", "1999", "2009", "2019"],[quant_1979, quant_1989, quant_1999, quant_2009, quant_2019])
 plt.xlabel("Jahr")
 plt.ylabel("Extremwert der Temperatur")
-plt.savefig("Task_1-3.png")
+plt.savefig("INFI\Aufgabe2\pics\Task_1-3.png")
 plt.show()
 
 #1.4
@@ -89,7 +89,7 @@ plt.bar(years, temps, align='center')
 plt.xlabel("Jahr")
 plt.xticks([0,1,2,3,4,5,6,7,8,9], ["2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020"])
 plt.ylabel("Temperatur")
-plt.savefig("Task_1-4.png")
+plt.savefig("INFI\Aufgabe2\pics\Task_1-4.png")
 plt.show()
 
 #1.5
@@ -107,5 +107,5 @@ plt.bar(years, rads, align='center')
 plt.xlabel("Jahr")
 plt.xticks([0,1,2,3,4,5,6,7,8,9], ["2011", "2012", "2013", "2014", "2015", "2016", "2017","2018", "2019", "2020"])
 plt.ylabel("Mittelwert der globalen Schneetiefe")
-plt.savefig("Task_1-5.png")
+plt.savefig("INFI\Aufgabe2\pics\Task_1-5.png")
 plt.show()
