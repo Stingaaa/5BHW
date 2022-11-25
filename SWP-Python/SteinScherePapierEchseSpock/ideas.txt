@@ -1,3 +1,5 @@
+Minimum Requirements:
+
 		Stein Schere Papier Echse Spock
 Stein		0	-1	1	-1	1
 Schere	1	0	-1	-1	1
@@ -8,3 +10,21 @@ Spock		-1	-1	1	1	0
 0 => neutral (gleicher Typ)
 1 => stark dagegen
 2 => schwach dagegen
+
+mehrere modis: random, mittels statistik kalkulieren (was wurde am öftesten gezogen oder so), troll (manipuliert die engaben z.b. stein - schere => papier - schere)
+
+daten mittels diagramm anzeigen
+
+daten mittels mqtt zwischen server und website hin und her senden
+
+bei neuanmeldung agb seite aufpoppen lassn mit unnötig langem text
+
+__________________
+virtual enviroment machen, um somit alle requirements in eine txt zu packen
+__________________
+klassen erstellen!
+__________________
+
+Additional:
+
+"gedankengang" des computers bei analysieren der daten in admin pnael anzeigen
