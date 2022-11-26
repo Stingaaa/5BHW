@@ -1,4 +1,4 @@
-[
+let wordlist =[
   "a",
   "ability",
   "able",

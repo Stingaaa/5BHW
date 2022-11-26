@@ -1,7 +1,153 @@
+<!DOCTYPE html>
+<script src="https://unpkg.com/vue@3"></script>
+<script src="C:\Users\maxip\Documents\GitHub\5BHW\SWP\Aufgabe3\wordlist.js"></script>
+
 <html>
 
-    <h1 id="test">asd</h1>
-    <button @click="startGame()">Start Game!</button>
+<head>
+    <meta charset="utf-8" />
+    <title>Hangman</title>
+</head>
 
-<script type="module" src="hangman.js"></script>
+<body></body>
+<div>
+    <div id="game">
+        <div>Recent scores: {{recent_scores}}</div>
+        <div>Highscore: {{highscore}}</div>
+        <div>Score: {{score}}</div>
+        <div>Mistakes: {{mistakes}}</div>
+        <div>Time: {{time}}</div>
+        <br />
+        <div>{{unveiled_letters}}</div>
+        <div v-if="solve">{{answer}}</div>
+        <br />
+        <br />
+        <button v-for="letter in letters" @click="onButtonPress">
+            {{letter}}
+        </button>
+        <br />
+        <br />
+        <img v-bind:src="img" v-bind:width="img_width" />
+
+        <!--<div>{{msg}}</div>-->
+
+        <br />
+        <br />
+        <button @click="reset">Reset Game</button>
+    </div>
+</div>
+
 </html>
+
+<script>
+    const { createApp } = Vue;
+    createApp({
+        data() {
+
+            return {
+                words: wordlist,
+                letters: Array.from(Array(26)).map((e, i) =>
+                    String.fromCharCode(i + 65)
+                ),
+                highscore: 0, recent_scores: [], score: 0,
+                time: 0, answer: "", added_points: 1000,
+                mistakes: 0, img: "", msg: "",
+                unveiled_letters: "", solve: false, interval: undefined,
+            };
+        },
+
+        methods: {
+
+            onButtonPress(e) {
+                this.letters.map((x) =>
+                    x == e.target.innerText
+                        ? this.letters.splice(this.letters.indexOf(x), 1) : null
+                );
+
+                value = e.target.innerText.toLowerCase();
+                if (this.answer.includes(value)) {
+                    this.score += this.added_points + Math.round(1000 / this.time);
+                    t = this.answer;
+                    wordlength = this.answer.length;
+                    for (let i = 0; i < wordlength; i++) {
+                        if (t[i] === value) {
+                            x = t.indexOf(value);
+                            this.unveiled_letters = this.unveiled_letters.substring(0, x) + value +
+                                                    this.unveiled_letters.substring(x + value.length);
+                            t = t.substring(0, x) + " " + t.substring(x + 1);
+                            //console.log(this.unveiled_letters);
+                        }
+                    }
+                    if (this.unveiled_letters === this.answer) {
+                        this.msg = "Winner winner, chicken dinner!";
+                        this.score += this.answer.length * 100;
+                        this.save_highscore(this.score);
+                        console.log(this.msg)
+                        this.reset();
+                    }
+                } else {
+                    this.mistakes++;
+                    this.img = "./hangman/" + this.mistakes + ".jpg";
+                    if (this.mistakes == 10) {
+                        this.msg = "Error 404, win not found!";
+                        console.log(this.msg)
+                        this.reset();
+                    }
+                }
+            },
+
+            reset() {
+                (this.letters = Array.from(Array(26)).map((e, i) => String.fromCharCode(i + 65))),
+                    (this.score = 0), (this.time = 0), (this.answer = ""),
+                    (this.mistakes = 0), (this.img = ""), (this.msg = ""),
+                    (this.unveiled_letters = ""), (this.solve = false),
+                    clearInterval(this.interval);
+                this.startGame();
+                //console.log("reset");
+            },
+
+            startGame() {
+                this.answer = wordlist[Math.floor(Math.random() * this.words.length)];
+                for (let i = 0; i < this.answer.length; i++) {
+                    this.unveiled_letters += "_";
+                }
+
+                this.interval = setInterval(this.timer, 1000);
+                this.img = "./hangman/" + this.mistakes + ".jpg";
+                this.highscore = localStorage.getItem("highscore");
+            },
+
+            timer() {
+                this.time++
+            },
+
+            save_highscore(score) {
+                let highscore = localStorage.getItem("highscore");
+                let recent_scores = localStorage.getItem("recent_scores");
+                if (highscore < score) {
+                    localStorage.setItem("highscore", JSON.stringify(Number(score)));
+                }
+                //console.log(recent_scores);
+                this.recent_scores.push(score);
+                localStorage.setItem("recent_scores", JSON.stringify(this.recent_scores));
+                //console.log(highscore);
+            },
+        },
+
+        created: function () {
+            this.startGame();
+        },
+
+        mounted() {
+            window.addEventListener("keypress", (e) => {
+                //console.log(e.key);
+                if (e.key == "ä") {
+                    this.solve = !this.solve;
+                }
+                if (e.key == "r") {
+                    this.reset()
+                }
+            });
+        },
+    }).mount("#game");
+</script>
