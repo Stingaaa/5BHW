@@ -79,7 +79,7 @@ print(touristsOverallPerDist)
 
 #b
 #pos = 0
-labels =dataStays['Bezirk'].unique()
+#labels = dataStays['Bezirk'].unique()
 #for b in labels:
 #    bez = dataStays[dataStays.Bezirk == b]
 #    pyp.boxplot(bez['standardRange'], positions=[pos])
@@ -116,6 +116,11 @@ staysPerPerson_2018 = data['x2018']/data['y2018']
 staysPerPerson_2020 = data['x2020']/data['y2020']
 
 #b
+#Manche Bezirke haben bei weitem mehr Zouristen auf die Gesamteinwohnerzahl
+#als weniger touristenreiche Bezirke
+
+#Zusätzlich sind in manchen Bezirken einige Gemeinde bei weitem beliebter, daher ist bei dem jeweiligem Boxplot
+#auch eine größere Differenz vorzufinden
 se.boxplot(x=data['Bezirk'], y=staysPerPerson_2018, data=data)
 pyp.savefig("INFI\Aufgabe3\pics\Task_5-b-1.png")
 pyp.show()
