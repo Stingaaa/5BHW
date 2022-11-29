@@ -2,8 +2,8 @@ Minimum Requirements:
 
 		Stein Schere Papier Echse Spock
 Stein		0	-1	1	-1	1
-Schere	1	0	-1	-1	1
-Papier	-1	1	0	1	-1
+Schere		1	0	-1	-1	1
+Papier		-1	1	0	1	-1
 Echse		1	1	-1	0	-1
 Spock		-1	-1	1	1	0
 
