@@ -7,7 +7,7 @@ class Scissor(Item):
         self.stats = {"scissor":0,"stone":-1,"paper":1,"lizard":1,"spock":-1}
 
     def itemName(self):
-        return self.name
+        return super().itemName()
 
     def checkStats(self, item2_name):
         return self.stats[item2_name]

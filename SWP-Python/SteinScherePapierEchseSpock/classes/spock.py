@@ -7,7 +7,7 @@ class Spock(Item):
         self.stats = {"scissor":1,"stone":1,"paper":-1,"lizard":-1,"spock":0}
 
     def itemName(self):
-        return self.name
+        return super().itemName()
 
     def checkStats(self, item2_name):
         return self.stats[item2_name]
