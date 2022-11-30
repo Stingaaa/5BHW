@@ -9,7 +9,7 @@ Spock		-1	-1	1	1	0
 
 0 => neutral (gleicher Typ)
 1 => stark dagegen
-2 => schwach dagegen
+-1 => schwach dagegen
 
 mehrere modis: random, mittels statistik kalkulieren (was wurde am öftesten gezogen oder so), troll (manipuliert die engaben z.b. stein - schere => papier - schere)
 
