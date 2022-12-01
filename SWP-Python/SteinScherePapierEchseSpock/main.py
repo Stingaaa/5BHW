@@ -20,7 +20,7 @@ def initCM():
                  "exit()",
                  "Ends the game")
     c.addCommand("-c",
-                 "from colorama import Fore\nprint(Fore.LIGHTGREEN_EX + 'Available Colors:')\nconf = json.load(open('SWP-Python\SteinScherePapierEchseSpock\config.txt'))\nprint(conf[0][0] + ' | ' + conf[0][1] + ' | ' + conf[0][2] + ' | ' + conf[0][3])\ncol=input(Fore.LIGHTGREEN_EX + 'Enter a color: ')\nif col in conf[0]: conf[1]=col\nopen('SWP-Python\SteinScherePapierEchseSpock\config.txt', 'w').write(json.dumps(conf))\nif col not in conf[0]:print(Fore.LIGHTGREEN_EX + col + ' is not one of the available colors!')",
+                 "from colorama import Fore\nprint(Fore.LIGHTGREEN_EX + 'Available Colors:')\nconf = json.load(open('SWP-Python\SteinScherePapierEchseSpock\config.txt'))\nprint(Fore.LIGHTYELLOW_EX + conf[0][0] + Fore.LIGHTGREEN_EX + ' | ' + Fore.LIGHTMAGENTA_EX + conf[0][1] + Fore.LIGHTGREEN_EX + ' | ' + Fore.LIGHTCYAN_EX + conf[0][2] + Fore.LIGHTGREEN_EX + ' | ' + Fore.LIGHTWHITE_EX + conf[0][3])\ncol=input(Fore.LIGHTGREEN_EX + 'Enter a color: ')\nif col in conf[0]: conf[1]=col\nopen('SWP-Python\SteinScherePapierEchseSpock\config.txt', 'w').write(json.dumps(conf))\nif col not in conf[0]:print(Fore.LIGHTGREEN_EX + col + ' is not one of the available colors!')",
                  "Change the color off the output")
     return c
 
