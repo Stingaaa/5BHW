@@ -17,7 +17,7 @@ def getPeople(f, t):
     p = f.getPersonen()
     return p[t]
 
-if __name__ == "__main__":
+def runCompany():
     f = createCompany("Firma oda so")
     m1 = createEmployee(typ.Typ.Mitarbeiter, "Franz", "IT", gender.Gender.male, f)
     m2 = createEmployee(typ.Typ.Mitarbeiter, "Pepi", "Marketing", gender.Gender.male, f)
@@ -31,3 +31,6 @@ if __name__ == "__main__":
     print("Es gibt " + str(f.getAbteilungszahl()) + " Abteilungen im Unternehmen!")
     print("Die Abteilung " + str(f.getStaerksteAbteilung()) + " hat die meisten Mitarbeiter!")
     print(f.getAnteil())
+
+if __name__ == "__main__":
+    runCompany()
