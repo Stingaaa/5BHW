@@ -1,3 +1,6 @@
+import json
+from colorama import Fore
+
 class CommandManager:
     
     def __init__(self):

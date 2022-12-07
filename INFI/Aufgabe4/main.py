@@ -31,7 +31,7 @@ def predictGrowth(y, v, year):
     # avgGrowthPerYear = []  
     # for i in range(len(v)-1):
     #     avgGrowthPerYear.append(v[i+1]-v[i])
-    # avgGrowth = sum(avgGrowthPerYear)/len(avgGrowthPerYear)
+    # avgGrowth = sum(avgGrowthPerYear)/len(avgGrowthPerYear)   
     # return str((year - y[0]) * avgGrowth + v[0])
     return str(model.params[1]*year + model.params[0])
     

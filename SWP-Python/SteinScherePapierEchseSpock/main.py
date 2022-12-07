@@ -9,18 +9,18 @@ def initPlayer(val):
 def initCM():
     c = commandManager.CommandManager()
     c.addCommand("-h",
-                 "from colorama import Fore\nprint(Fore.LIGHTGREEN_EX + 'All commands:')\nfor cmd in self.commands:print(cmd+'\t-\t'+self.info[cmd])",
+                 "print(Fore.LIGHTGREEN_EX + 'All commands:')\nfor cmd in self.commands:print(cmd+'\t-\t'+self.info[cmd])",
                  "Shows all available commands")
     c.addCommand("-s",
-                "from colorama import Fore\nprint(Fore.LIGHTGREEN_EX + 'Game Statistic:')\nprint(Fore.LIGHTGREEN_EX + '----------')\nevents = json.load(open('SWP-Python\SteinScherePapierEchseSpock\saves.txt'))\ntotal = sum(list(events[0].values())[0:3])\n"
+                "print(Fore.LIGHTGREEN_EX + 'Game Statistic:')\nprint(Fore.LIGHTGREEN_EX + '----------')\nevents = json.load(open('SWP-Python\SteinScherePapierEchseSpock\saves.txt'))\ntotal = sum(list(events[0].values())[0:3])\n"
                 + "print(Fore.LIGHTGREEN_EX + 'Wins: ' + str(events[0]['win']) + ' - ' + str(round(events[0]['win']/total*100, 2)) + '%')\nprint(Fore.LIGHTGREEN_EX + 'Draws: ' + str(events[0]['draw']) + ' - ' + str(round(events[0]['draw']/total*100, 2)) + '%')\nprint(Fore.LIGHTGREEN_EX + 'Loses: ' + str(events[0]['lose']) + ' - ' + str(round(events[0]['lose']/total*100, 2)) + '%')\nprint('----------')\n"
                 + "print(Fore.LIGHTGREEN_EX + 'Number of items picked:')\nprint(Fore.LIGHTGREEN_EX + 'Stone: ' + str(events[0]['stone']) + ' - ' + str(round(events[0]['stone']/total*100, 2)) + '%')\nprint(Fore.LIGHTGREEN_EX + 'Scissor: ' + str(events[0]['scissor']) + ' - ' + str(round(events[0]['scissor']/total*100, 2)) + '%')\nprint(Fore.LIGHTGREEN_EX + 'Paper: ' + str(events[0]['paper']) + ' - ' + str(round(events[0]['paper']/total*100, 2)) + '%')\nprint(Fore.LIGHTGREEN_EX + 'Spock: ' + str(events[0]['spock']) + ' - ' + str(round(events[0]['spock']/total*100, 2)) + '%')\nprint(Fore.LIGHTGREEN_EX + 'Lizard: ' + str(events[0]['lizard']) + ' - ' + str(round(events[0]['lizard']/total*100, 2)) + '%')",
                 "Shows a statistic of your played games")
     c.addCommand("-e",
-                 "from colorama import Fore\nprint(Fore.WHITE)\nexit()",
+                 "print(Fore.WHITE)\nexit()",
                  "Ends the game")
     c.addCommand("-c",
-                 "from colorama import Fore\nprint(Fore.LIGHTGREEN_EX + 'Available Colors:')\nconf = json.load(open('SWP-Python\SteinScherePapierEchseSpock\config.txt'))\nprint(Fore.LIGHTYELLOW_EX + conf[0][0] + Fore.LIGHTGREEN_EX + ' | ' + Fore.LIGHTMAGENTA_EX + conf[0][1] + Fore.LIGHTGREEN_EX + ' | ' + Fore.LIGHTCYAN_EX + conf[0][2] + Fore.LIGHTGREEN_EX + ' | ' + Fore.LIGHTWHITE_EX + conf[0][3])\ncol=input(Fore.LIGHTGREEN_EX + 'Enter a color: ')\nif col in conf[0]: conf[1]=col\nopen('SWP-Python\SteinScherePapierEchseSpock\config.txt', 'w').write(json.dumps(conf))\nif col not in conf[0]:print(Fore.LIGHTGREEN_EX + col + ' is not one of the available colors!')",
+                 "print(Fore.LIGHTGREEN_EX + 'Available Colors:')\nconf = json.load(open('SWP-Python\SteinScherePapierEchseSpock\config.txt'))\nprint(Fore.LIGHTYELLOW_EX + conf[0][0] + Fore.LIGHTGREEN_EX + ' | ' + Fore.LIGHTMAGENTA_EX + conf[0][1] + Fore.LIGHTGREEN_EX + ' | ' + Fore.LIGHTCYAN_EX + conf[0][2] + Fore.LIGHTGREEN_EX + ' | ' + Fore.LIGHTWHITE_EX + conf[0][3])\ncol=input(Fore.LIGHTGREEN_EX + 'Enter a color: ')\nif col in conf[0]: conf[1]=col\nopen('SWP-Python\SteinScherePapierEchseSpock\config.txt', 'w').write(json.dumps(conf))\nif col not in conf[0]:print(Fore.LIGHTGREEN_EX + col + ' is not one of the available colors!')",
                  "Change the color off the output")
     return c
 
