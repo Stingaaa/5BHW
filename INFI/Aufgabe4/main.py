@@ -7,7 +7,6 @@ data = pa.read_excel("INFI\Aufgabe4\data/bev_meld.xlsx")
 
 #Task 2.1
 growth = data.values[:,3:].sum(axis=0)
-print(growth)
 p.title("Gesamtbevölkerung pro Jahr")
 p.plot(data.columns[3:], growth)
 p.xlabel("Jahr")
@@ -29,11 +28,12 @@ def getModel(y, v):
 def predictGrowth(y, v, year):
     model = getModel(y, v)
     print(model.summary())
-    avgGrowthPerYear = []  
-    for i in range(len(v)-1):
-        avgGrowthPerYear.append(v[i+1]-v[i])
-    avgGrowth = sum(avgGrowthPerYear)/len(avgGrowthPerYear)
-    return str((year - y[0]) * avgGrowth + v[0])
+    # avgGrowthPerYear = []  
+    # for i in range(len(v)-1):
+    #     avgGrowthPerYear.append(v[i+1]-v[i])
+    # avgGrowth = sum(avgGrowthPerYear)/len(avgGrowthPerYear)
+    # return str((year - y[0]) * avgGrowth + v[0])
+    return str(model.params[1]*year + model.params[0])
     
 print("Prediction 2030: " + predictGrowth(pa.to_numeric(data.columns[3:]), pa.to_numeric(growth), 2030))
 #print("Predictions 2030 - 2100: " + str(getModel(pa.to_numeric(data.columns[3:]), pa.to_numeric(growth)).predict(pa.DataFrame({"years":np.arange(2030,2100)}))))
