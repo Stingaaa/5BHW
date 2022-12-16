@@ -1,5 +1,7 @@
 import json
 import random
+import psycopg2
+import sqlite3
 from colorama import Fore, Back, Style
 from classes import player, commandManager, stone, scissor, paper, spock, lizard
 

@@ -1,1 +1,1 @@
-[["Yellow", "Magenta", "Cyan", "White"], "Magenta"]
+[["Yellow", "Magenta", "Cyan", "White"], "Cyan"]
