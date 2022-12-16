@@ -1,4 +1,5 @@
 import json
+import pdb
 import random
 import psycopg2
 import sqlite3
@@ -110,7 +111,8 @@ def colorOfOutput():
             return Fore.LIGHTWHITE_EX
         
 def runGame():
-    p = initPlayer(0)
+    p = initPlayer(input("Your username: "))
+    breakpoint()
     cM = initCM()
     computer = initItem(random.randint(1,5), "")
     player = processInput(input(colorOfOutput() + "Options:\nStone = 1, Scissor = 2, Paper = 3, Spock = 4, Lizard = 5\nFor further commands enter -h\n\nChoose your Item: "),p,cM)

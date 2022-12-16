@@ -1,1 +1,1 @@
-[{"win": 104, "draw": 56, "lose": 82, "scissor": 66, "stone": 49, "paper": 48, "spock": 44, "lizard": 37}]
+[["test"], {"win": 110, "draw": 59, "lose": 89, "scissor": 74, "stone": 49, "paper": 51, "spock": 47, "lizard": 39}]
