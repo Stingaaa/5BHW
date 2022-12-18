@@ -1,0 +1,23 @@
+<input type="hidden" id="username" name="username" value="{{user}}">
+<input type="hidden" id="stone" name="stone" value="https://keepmeme.com/meme/20210706/drawing-duck-going-to-cut-its-throat-by-scissors.webp">
+<input type="hidden" id="scissor" name="scissor" value="https://preview.redd.it/o7wxqbmeihb81.jpg?auto=webp&s=16b55c4cdeb70ef0cfa2f701f27b946f0ccddbc8">
+<input type="hidden" id="paper" name="paper" value="https://i.pinimg.com/originals/d5/0c/2f/d50c2f95e33e02a147c8f647d3c659f6.jpg">
+<input type="hidden" id="lizard" name="lizard" value="https://i.kym-cdn.com/photos/images/original/001/265/073/5b8.jpg">
+<input type="hidden" id="spock" name="spock" value="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVpIjHcsid48ItMU-3AGR9a6oKjTw8zyWVfQ&usqp=CAU">
+
+<form action="/play" method="POST">
+    <select name="item" onchange="this.form.submit()">
+        <option>-</option>
+        <option name="stone">stone</option>
+        <option name="scissor">scissor</option>
+        <option name="paper">paper</option>
+        <option name="lizard">lizard</option>
+        <option name="spock">spock</option>
+    </select>
+</form>
+
+<img id="player" src="{{imgP}}" width="200" height="200" alt="submit"/>
+
+<img id="pc" src="{{imgPC}}" width="200" height="200" alt="submit"/>
+
+<a style="font-size: x-large;" style="line-break: strict;">{{out}}</a>

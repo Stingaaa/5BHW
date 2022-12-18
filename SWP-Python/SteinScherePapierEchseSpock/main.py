@@ -1,10 +1,10 @@
 import json
 import pdb
 import random
-import psycopg2
-import sqlite3
 from colorama import Fore, Back, Style
 from classes import player, commandManager, stone, scissor, paper, spock, lizard
+import paho.mqtt.client as paho
+from paho import mqtt
 
 def initPlayer(val):
     return player.Player(val)
@@ -26,6 +26,48 @@ def initCM():
                  "print(Fore.LIGHTGREEN_EX + 'Available Colors:')\nconf = json.load(open('SWP-Python\SteinScherePapierEchseSpock\config.txt'))\nprint(Fore.LIGHTYELLOW_EX + conf[0][0] + Fore.LIGHTGREEN_EX + ' | ' + Fore.LIGHTMAGENTA_EX + conf[0][1] + Fore.LIGHTGREEN_EX + ' | ' + Fore.LIGHTCYAN_EX + conf[0][2] + Fore.LIGHTGREEN_EX + ' | ' + Fore.LIGHTWHITE_EX + conf[0][3])\ncol=input(Fore.LIGHTGREEN_EX + 'Enter a color: ')\nif col in conf[0]: conf[1]=col\nopen('SWP-Python\SteinScherePapierEchseSpock\config.txt', 'w').write(json.dumps(conf))\nif col not in conf[0]:print(Fore.LIGHTGREEN_EX + col + ' is not one of the available colors!')",
                  "Change the color off the output")
     return c
+
+def on_message(client, userdata, msg):
+    m = str(msg.payload.decode("utf-8")).split("-")
+    n = clientName()
+    print(m)
+    if(n != m[0]):
+        if(m[1] == "user"):
+            e = getEvents()
+            if(m[2] in e[0]):
+                print("User is known")
+                client.publish("game", n+"-user-known", 1)
+            else:
+                print("User is unknown")
+                e[0].append(m[2])
+                e.append(initDict())
+                
+                with open("SWP-Python\SteinScherePapierEchseSpock\saves.txt", "w") as ev:
+                    ev.write(json.dumps(e))
+                client.publish("game", n+"-user-unknown", 1)
+        if(m[1] == "play"):
+            player = initPlayer(m[2])
+            computer = initItem(random.randint(1,5), "")
+            item = initItem(int(m[3]), "", player)
+            outcome = checkMatch(item.checkStats(computer.itemName()), player)
+            print(item.itemName() + " vs " + computer.itemName() + " - " + outcome)
+            client.publish("game", n+"-play-"+item.itemName()+"-"+computer.itemName()+"-"+outcome, 1)
+
+def initDict():
+    return {"win": 0, "draw": 0, "lose": 0, "scissor": 0, "stone": 0, "paper": 0, "spock": 0, "lizard": 0}
+
+def clientName():
+    return "server"
+
+def generateClient():
+    name = clientName()
+    client = paho.Client(client_id=name, userdata=None, protocol=paho.MQTTv5)
+    client.tls_set(tls_version=mqtt.client.ssl.PROTOCOL_TLS)
+    client.username_pw_set("Stingaaa", "test1234")
+    client.connect("15d9dcdf33e3466799ebbd0151f866ee.s2.eu.hivemq.cloud", 8883)
+    client.on_message = on_message
+    client.subscribe("game", qos=1)
+    return client, name
 
 def initItem(nr, msg="", p=None):
     print(msg + "\n")
@@ -86,11 +128,14 @@ def checkMatch(nr, p):
             return Fore.LIGHTGREEN_EX + "You won!"
         case other:
             return "Something went wrong!"
-        
-def logEvent(user_id, event):    
+
+def getEvents():
     with open("SWP-Python\SteinScherePapierEchseSpock\saves.txt", "r") as e:
-        events = json.load(e)
+        return json.load(e)
+
+def logEvent(user_id, event):
     
+    events = getEvents()
     events[user_id][event] += 1
     
     with open("SWP-Python\SteinScherePapierEchseSpock\saves.txt", "w") as e:
@@ -112,7 +157,6 @@ def colorOfOutput():
         
 def runGame():
     p = initPlayer(input("Your username: "))
-    breakpoint()
     cM = initCM()
     computer = initItem(random.randint(1,5), "")
     player = processInput(input(colorOfOutput() + "Options:\nStone = 1, Scissor = 2, Paper = 3, Spock = 4, Lizard = 5\nFor further commands enter -h\n\nChoose your Item: "),p,cM)
@@ -120,5 +164,9 @@ def runGame():
     print(checkMatch(player.checkStats(computer.itemName()), p))
     runGame()
 
+def runWeb():
+    c, temp = generateClient()
+    c.loop_forever()
+
 if __name__ == "__main__":
-    runGame()
+    runWeb()
