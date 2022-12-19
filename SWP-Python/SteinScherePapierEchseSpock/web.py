@@ -28,7 +28,6 @@ def on_message(client, userdata, msg):
                 app.name = old[0] + "-" + old[1] + "-" + m[2]
             else:
                 app.name = app.name+"-"+m[2]
-    c.loop_stop()
 
 def generateClient():
     name = "web"
@@ -51,6 +50,7 @@ def start():
         for i in range(10):    
             time.sleep(0.1)
             print()
+        c.loop_stop()
         return render_template(app.name.split("-")[0]+".html", user=app.name.split("-")[1], imgP="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVpIjHcsid48ItMU-3AGR9a6oKjTw8zyWVfQ&usqp=CAU", imgPC="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVpIjHcsid48ItMU-3AGR9a6oKjTw8zyWVfQ&usqp=CAU")
     
     if request.method == "GET":
@@ -66,6 +66,7 @@ def play():
     for i in range(10):    
         time.sleep(0.1)
         print()
+        c.loop_stop()
     return render_template(app.name.split("-")[0]+".html", user=app.name.split("-")[1], imgP=request.form.get(app.name.split("-")[2]), imgPC=request.form.get(app.name.split("-")[3]), out=app.name.split("-")[4].split("m")[1])
 
 @app.route('/agb',methods=["GET", "POST"])
