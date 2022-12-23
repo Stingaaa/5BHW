@@ -11,7 +11,7 @@ class Player:
         else:
             self.ID = len(events[0])+1
             events[0].append(name)
-            events.append({"win": 0, "draw": 0, "lose": 0, "scissor": 0, "stone": 0, "paper": 0, "spock": 0, "lizard": 0})
+            events.append({"win": 0, "draw": 0, "lose": 0, "stone": 0, "scissor": 0, "paper": 0, "lizard": 0, "spock": 0})
             with open("SWP-Python\SteinScherePapierEchseSpock\saves.txt", "w") as e:
                 e.write(json.dumps(events))
         
