@@ -1,1 +1,17 @@
-<h1>{{stats}}</h1>
+<html>
+<h1>Stats of Player</h1>
+
+<div id='chart1' class='chart'></div>
+<div id='chart2' class='chart'></div>
+
+<script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+<script type='text/javascript'>
+    var graphs = {{outs | safe}};
+    Plotly.plot('chart1',graphs,{});
+  </script>
+
+<script type='text/javascript'>
+    var graphs = {{items | safe}};
+    Plotly.plot('chart2',graphs,{});
+  </script>
+</html>

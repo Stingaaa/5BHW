@@ -1,73 +1,18 @@
 import json
-import pdb
+import sys
+import time
+import pandas
+import pygame as pg
+import numpy as np
+from matplotlib import cm
+from matplotlib import pyplot as plt
 import random
 from colorama import Fore, Back, Style
 from classes import player, commandManager, stone, scissor, paper, spock, lizard
-import paho.mqtt.client as paho
-from paho import mqtt
+from screeninfo import get_monitors
 
 def initPlayer(val):
     return player.Player(val)
-
-def initCM():
-    c = commandManager.CommandManager()
-    c.addCommand("-h",
-                 "print(Fore.LIGHTGREEN_EX + 'All commands:')\nfor cmd in self.commands:print(cmd+'\t-\t'+self.info[cmd])",
-                 "Shows all available commands")
-    c.addCommand("-s",
-                "print(Fore.LIGHTGREEN_EX + 'Game Statistic:')\nprint(Fore.LIGHTGREEN_EX + '----------')\nevents = json.load(open('SWP-Python\SteinScherePapierEchseSpock\saves.txt'))\ntotal = sum(list(events[0].values())[0:3])\n"
-                + "print(Fore.LIGHTGREEN_EX + 'Wins: ' + str(events[0]['win']) + ' - ' + str(round(events[0]['win']/total*100, 2)) + '%')\nprint(Fore.LIGHTGREEN_EX + 'Draws: ' + str(events[0]['draw']) + ' - ' + str(round(events[0]['draw']/total*100, 2)) + '%')\nprint(Fore.LIGHTGREEN_EX + 'Loses: ' + str(events[0]['lose']) + ' - ' + str(round(events[0]['lose']/total*100, 2)) + '%')\nprint('----------')\n"
-                + "print(Fore.LIGHTGREEN_EX + 'Number of items picked:')\nprint(Fore.LIGHTGREEN_EX + 'Stone: ' + str(events[0]['stone']) + ' - ' + str(round(events[0]['stone']/total*100, 2)) + '%')\nprint(Fore.LIGHTGREEN_EX + 'Scissor: ' + str(events[0]['scissor']) + ' - ' + str(round(events[0]['scissor']/total*100, 2)) + '%')\nprint(Fore.LIGHTGREEN_EX + 'Paper: ' + str(events[0]['paper']) + ' - ' + str(round(events[0]['paper']/total*100, 2)) + '%')\nprint(Fore.LIGHTGREEN_EX + 'Spock: ' + str(events[0]['spock']) + ' - ' + str(round(events[0]['spock']/total*100, 2)) + '%')\nprint(Fore.LIGHTGREEN_EX + 'Lizard: ' + str(events[0]['lizard']) + ' - ' + str(round(events[0]['lizard']/total*100, 2)) + '%')",
-                "Shows a statistic of your played games")
-    c.addCommand("-e",
-                 "print(Fore.WHITE)\nexit()",
-                 "Ends the game")
-    c.addCommand("-c",
-                 "print(Fore.LIGHTGREEN_EX + 'Available Colors:')\nconf = json.load(open('SWP-Python\SteinScherePapierEchseSpock\config.txt'))\nprint(Fore.LIGHTYELLOW_EX + conf[0][0] + Fore.LIGHTGREEN_EX + ' | ' + Fore.LIGHTMAGENTA_EX + conf[0][1] + Fore.LIGHTGREEN_EX + ' | ' + Fore.LIGHTCYAN_EX + conf[0][2] + Fore.LIGHTGREEN_EX + ' | ' + Fore.LIGHTWHITE_EX + conf[0][3])\ncol=input(Fore.LIGHTGREEN_EX + 'Enter a color: ')\nif col in conf[0]: conf[1]=col\nopen('SWP-Python\SteinScherePapierEchseSpock\config.txt', 'w').write(json.dumps(conf))\nif col not in conf[0]:print(Fore.LIGHTGREEN_EX + col + ' is not one of the available colors!')",
-                 "Change the color off the output")
-    return c
-
-def on_message(client, userdata, msg):
-    m = str(msg.payload.decode("utf-8")).split("-")
-    n = clientName()
-    print(m)
-    if(n != m[0]):
-        if(m[1] == "user"):
-            e = getEvents()
-            if(m[2] in e[0]):
-                print("User is known")
-                client.publish("game", n+"-user-known", 1)
-            else:
-                print("User is unknown")
-                e[0].append(m[2])
-                e.append(initDict())
-                
-                with open("SWP-Python\SteinScherePapierEchseSpock\saves.txt", "w") as ev:
-                    ev.write(json.dumps(e))
-                client.publish("game", n+"-user-unknown", 1)
-        if(m[1] == "play"):
-            player = initPlayer(m[2])
-            computer = initItem(random.randint(1,5), "")
-            item = initItem(int(m[3]), "", player)
-            outcome = checkMatch(item.checkStats(computer.itemName()), player)
-            print(item.itemName() + " vs " + computer.itemName() + " - " + outcome)
-            client.publish("game", n+"-play-"+item.itemName()+"-"+computer.itemName()+"-"+outcome, 1)
-
-def initDict():
-    return {"win": 0, "draw": 0, "lose": 0, "scissor": 0, "stone": 0, "paper": 0, "spock": 0, "lizard": 0}
-
-def clientName():
-    return "server"
-
-def generateClient():
-    name = clientName()
-    client = paho.Client(client_id=name, userdata=None, protocol=paho.MQTTv5)
-    client.tls_set(tls_version=mqtt.client.ssl.PROTOCOL_TLS)
-    client.username_pw_set("Stingaaa", "test1234")
-    client.connect("15d9dcdf33e3466799ebbd0151f866ee.s2.eu.hivemq.cloud", 8883)
-    client.on_message = on_message
-    client.subscribe("game", qos=1)
-    return client, name
 
 def initItem(nr, msg="", p=None):
     print(msg + "\n")
@@ -90,31 +35,14 @@ def initItem(nr, msg="", p=None):
         case 4:
             if p != None:
                 id = p.getID()
-                logEvent(id, "spock")
-            return spock.Spock()
+                logEvent(id, "lizard")
+            return lizard.Lizard()
         case 5:
             if p != None: 
                 id = p.getID()
-                logEvent(id, "lizard")
-            return lizard.Lizard()
+                logEvent(id, "spock")
+            return spock.Spock()
 
-def processInput(i, p, cm, msg=""):
-    print(Fore.WHITE + msg)
-    commands = cm.commands
-    if len(i) == 1:
-        if ord(i) > 48 and ord(i) < 54:
-            return initItem(int(i), "", p)
-        else:
-            print()
-            return processInput(input(colorOfOutput() + "Options:\nStone = 1, Scissor = 2, Paper = 3, Spock = 4, Lizard = 5\nFor further commands enter -h\n\nChoose your Item: "),p,cm, "Hey you! Enter a valid number!")
-    elif i in commands:
-        cm.executeCommand(i)
-        print()
-        return processInput(input(colorOfOutput() + "Options:\nStone = 1, Scissor = 2, Paper = 3, Spock = 4, Lizard = 5\nFor further commands enter -h\n\nChoose your Item: "),p,cm, "")
-    else:
-        print()
-        return processInput(input(colorOfOutput() + "Options:\nStone = 1, Scissor = 2, Paper = 3, Spock = 4, Lizard = 5\nFor further commands enter -h\n\nChoose your Item: "),p,cm, "Hey you! Enter a valid command!")
-    
 def checkMatch(nr, p):
     match nr:
         case -1:
@@ -134,39 +62,195 @@ def getEvents():
         return json.load(e)
 
 def logEvent(user_id, event):
-    
     events = getEvents()
     events[user_id][event] += 1
     
     with open("SWP-Python\SteinScherePapierEchseSpock\saves.txt", "w") as e:
         e.write(json.dumps(events))
     return "Updated " + event + " to " + str(events[user_id][event])
-
-def colorOfOutput():
-    with open("SWP-Python\SteinScherePapierEchseSpock\config.txt", "r") as e:
-        conf = json.load(e)
-    match conf[1]:
-        case "Yellow":
-            return Fore.LIGHTYELLOW_EX
-        case "Magenta":
-            return Fore.LIGHTMAGENTA_EX
-        case "Cyan":
-            return Fore.LIGHTCYAN_EX
-        case "White":
-            return Fore.LIGHTWHITE_EX
+                
+def login(screen, clock):
+    intro = pg.image.load("SWP-Python\SteinScherePapierEchseSpock\pics_gifs\intro.jpg").convert()
+    intro = pg.transform.scale(intro, (screen.get_width(), screen.get_height()))
+    input_rect = pg.Rect(screen.get_width()/8*5, screen.get_height()/16, screen.get_width()/4, screen.get_height()/16)
+    user_input = ""
+    color_active = pg.Color("lightgrey")
+    color_passive = pg.Color("grey")
+    color = color_passive
+    active = False
+    screen.fill((0,0,0))
+    while True:
+        for event in pg.event.get():
+            if event.type == pg.KEYDOWN:
+                if event.key == pg.K_ESCAPE:
+                    pg.quit()
+                    sys.exit()
+            if event.type == pg.MOUSEBUTTONDOWN:
+                if input_rect.collidepoint(event.pos):
+                    active = True
+                else:
+                    active = False
         
-def runGame():
-    p = initPlayer(input("Your username: "))
-    cM = initCM()
-    computer = initItem(random.randint(1,5), "")
-    player = processInput(input(colorOfOutput() + "Options:\nStone = 1, Scissor = 2, Paper = 3, Spock = 4, Lizard = 5\nFor further commands enter -h\n\nChoose your Item: "),p,cM)
-    print(colorOfOutput() + player.itemName() + " vs " + computer.itemName())
-    print(checkMatch(player.checkStats(computer.itemName()), p))
-    runGame()
+            if active:
+                if event.type == pg.KEYDOWN:
+                    if event.key == pg.K_RETURN:
+                        return user_input
+                    if event.key == pg.K_BACKSPACE:
+                        user_input = user_input[:-1]
+                    else:
+                        user_input += event.unicode
+                    
+        if active:
+            color = color_active
+        else:
+            color = color_passive
+            
+        screen.blit(intro, intro.get_rect())
+        screen.blit(pg.font.Font(None, 72).render("Enter Username", True, (179,230,255)), (input_rect.x, input_rect.y-50))
+        pg.draw.rect(screen, color, input_rect)
+        screen.blit(pg.font.Font(None, 72).render(user_input, True, (179,230,255)), (input_rect.x+5, input_rect.y+5))
+        input_rect.w = max(100, input_rect.width)
+        pg.display.update()
+        clock.tick(60)  
+    
+def game(screen, clock, p):
+    intro = pg.image.load("SWP-Python\SteinScherePapierEchseSpock\pics_gifs\intro.jpg").convert()
+    intro = pg.transform.scale(intro, (screen.get_width(), screen.get_height()))
+    stone_btn = pg.Rect(screen.get_width()/21*13, screen.get_height()/21*16, screen.get_width()/8, screen.get_height()/5)
+    scissor_btn = pg.Rect(screen.get_width()/20*9, screen.get_height()/24, screen.get_width()/6, screen.get_height()/5)
+    paper_btn = pg.Rect(screen.get_width()/27*20, screen.get_height()/3, screen.get_width()/7, screen.get_height()/4)
+    lizard_btn = pg.Rect(screen.get_width()/3, screen.get_height()/17*13, screen.get_width()/9, screen.get_height()/5)
+    spock_btn = pg.Rect(screen.get_width()/5, screen.get_height()/3, screen.get_width()/7, screen.get_height()/4)
+    stats_btn = pg.Rect(screen.get_width()/8*6, screen.get_height()/16, screen.get_width()/12, screen.get_height()/16)
+    screen.fill((0,0,0))
+    while True:
+        for event in pg.event.get():
+            if event.type == pg.KEYDOWN:
+                    if event.key == pg.K_ESCAPE:
+                        pg.quit()
+                        sys.exit()
+            if event.type == pg.MOUSEBUTTONDOWN:
+                if stone_btn.collidepoint(event.pos):
+                    return 1
+                elif scissor_btn.collidepoint(event.pos):
+                    return 2
+                elif paper_btn.collidepoint(event.pos):
+                    return 3
+                elif lizard_btn.collidepoint(event.pos):
+                    return 4
+                elif spock_btn.collidepoint(event.pos):
+                    return 5
+                elif stats_btn.collidepoint(event.pos):
+                    return stats(screen, clock, p)
+        pg.draw.rect(screen, pg.color.Color(100,0,0), stone_btn)
+        pg.draw.rect(screen, pg.color.Color(100,0,0), scissor_btn)
+        pg.draw.rect(screen, pg.color.Color(100,0,0), paper_btn)
+        pg.draw.rect(screen, pg.color.Color(100,0,0), lizard_btn)
+        pg.draw.rect(screen, pg.color.Color(100,0,0), spock_btn)
+        screen.blit(intro, intro.get_rect())
+        pg.draw.rect(screen, pg.color.Color(194, 130, 133), stats_btn)
+        screen.blit(pg.font.Font(None, 72).render("Stats", True, (179,230,255)), (stats_btn.x+10, stats_btn.y+5))
+        pg.display.update()
+        clock.tick(60)
+ 
+def gradientbars(bars,ydata,cmap):
+    ax = bars[0].axes
+    lim = ax.get_xlim()+ax.get_ylim()
+    ax.axis(lim)
+    for bar in bars:
+        bar.set_facecolor("none")
+        x,y = bar.get_xy()
+        w, h = bar.get_width(), bar.get_height()
+        grad = np.atleast_2d(np.linspace(0,1*h/max(ydata),256)).T
+        ax.imshow(grad, extent=[x,x+w,y,y+h], origin='lower', aspect="auto", 
+                  norm=cm.colors.NoNorm(vmin=0,vmax=1), cmap=plt.get_cmap(cmap)) 
+            
+def stats(screen, clock, p):
+    e = getEvents()
+    pStats = e[p.getID()]
+    names = list(pStats.keys())
+    values = list(pStats.values())
+    fig1, ax1 = plt.subplots()
+    gradientbars(ax1.bar(names[:3], values[:3]), values[:3], "cool_r")
+    plt.savefig("SWP-Python\SteinScherePapierEchseSpock\pics_gifs/outcomes.png")
+    fig2, ax2 = plt.subplots()
+    gradientbars(ax2.bar(names[3:], values[3:]), values[3:], "cool_r")
+    plt.savefig("SWP-Python\SteinScherePapierEchseSpock\pics_gifs/items.png")
+    game_btn = pg.Rect(screen.get_width()/8*6, screen.get_height()/16, screen.get_width()/12, screen.get_height()/16)
+    screen.fill((255,255,255))
+    while True:
+        for event in pg.event.get():
+            if event.type == pg.KEYDOWN:
+                    if event.key == pg.K_ESCAPE:
+                        pg.quit()
+                        sys.exit()
+            if event.type == pg.MOUSEBUTTONDOWN:
+                if game_btn.collidepoint(event.pos):
+                    return game(screen, clock, p)
+        pg.draw.rect(screen, pg.color.Color(194, 130, 133), game_btn)
+        screen.blit(pg.font.Font(None, 72).render("Game", True, (179,230,255)), (game_btn.x+10, game_btn.y+5))
+        outcomes = pg.image.load("SWP-Python\SteinScherePapierEchseSpock\pics_gifs/outcomes.png")
+        items = pg.image.load("SWP-Python\SteinScherePapierEchseSpock\pics_gifs/items.png")
+        screen.blit(pg.transform.scale(outcomes, (screen.get_width()/9*4, screen.get_height()/7*4)), (screen.get_width()/27*1, screen.get_height()/14*3))
+        screen.blit(pg.transform.scale(items, (screen.get_width()/9*4, screen.get_height()/7*4)), (screen.get_width()/27*13, screen.get_height()/14*3))
+        pg.display.update()
+        clock.tick(60)
 
-def runWeb():
-    c, temp = generateClient()
-    c.loop_forever()
+def gameResult(screen, clock, pItem, cItem, out, p):
+    intro = pg.image.load("SWP-Python\SteinScherePapierEchseSpock\pics_gifs\intro.jpg").convert()
+    intro = pg.transform.scale(intro, (screen.get_width(), screen.get_height()))
+    restart_btn = pg.Rect(screen.get_width()/5*4, screen.get_height()/5*4, screen.get_width()/8, screen.get_height()/16)
+    exit_btn = pg.Rect(screen.get_width()/5*4, screen.get_height()/11*10, screen.get_width()/8, screen.get_height()/16)
+    stone_btn = pg.Rect(screen.get_width()/21*13, screen.get_height()/21*16, screen.get_width()/8, screen.get_height()/5)
+    scissor_btn = pg.Rect(screen.get_width()/20*9, screen.get_height()/24, screen.get_width()/6, screen.get_height()/5)
+    paper_btn = pg.Rect(screen.get_width()/27*20, screen.get_height()/3, screen.get_width()/7, screen.get_height()/4)
+    lizard_btn = pg.Rect(screen.get_width()/3, screen.get_height()/17*13, screen.get_width()/9, screen.get_height()/5)
+    spock_btn = pg.Rect(screen.get_width()/5, screen.get_height()/3, screen.get_width()/7, screen.get_height()/4)
+    btns = {"stone": stone_btn, "scissor": scissor_btn, "paper": paper_btn, "lizard": lizard_btn, "spock": spock_btn}
+    btnP = btns[pItem]
+    btnC = btns[cItem]
+        
+    screen.fill((0,0,0))
+    while True:
+        for event in pg.event.get():
+            if event.type == pg.KEYDOWN:
+                    if event.key == pg.K_ESCAPE:
+                        pg.quit()
+                        sys.exit()
+                    elif event.key == pg.K_r:
+                        return runGame(p)
+            if event.type == pg.MOUSEBUTTONDOWN:
+                if exit_btn.collidepoint(event.pos):
+                    pg.quit()
+                    sys.exit()                
+                elif restart_btn.collidepoint(event.pos):
+                    return runGame(p)
+                
+        screen.blit(intro, intro.get_rect())
+        pg.draw.rect(screen, pg.color.Color(100,0,100), exit_btn)
+        screen.blit(pg.font.Font(None, 72).render("Exit", True, (179,230,255)), (exit_btn.x+65, exit_btn.y+10))
+        pg.draw.rect(screen, pg.color.Color(100,0,100), restart_btn)
+        screen.blit(pg.font.Font(None, 72).render("Restart", True, (179,230,255)), (restart_btn.x+30, restart_btn.y+10))
+        pg.draw.rect(screen, pg.color.Color(100,200,100), btnP, 3)
+        pg.draw.rect(screen, pg.color.Color(100,200,100), btnC, 3)
+        screen.blit(pg.font.Font(None, 72).render(out, True, (210,130,255)), (screen.get_width()/8*6, screen.get_height()/16))
+        pg.display.update()
+        clock.tick(60)
+        
+def runGame(p=None):
+    pg.init()
+    clock = pg.time.Clock()
+    size = get_monitors()[0].width, get_monitors()[0].height
+    screen = pg.display.set_mode(size)
+    player = p
+    if player is None:
+        player = initPlayer(login(screen, clock))
+    computer = initItem(random.randint(1,5))
+    chosenItem = initItem(game(screen, clock, player), "", player)
+    print(chosenItem.itemName() + " vs " + computer.itemName())
+    outcome = (checkMatch(chosenItem.checkStats(computer.itemName()), player))
+    print(outcome)
+    gameResult(screen, clock, chosenItem.itemName(), computer.itemName(), outcome.split("m")[1], player)
 
 if __name__ == "__main__":
-    runWeb()
+    runGame()
