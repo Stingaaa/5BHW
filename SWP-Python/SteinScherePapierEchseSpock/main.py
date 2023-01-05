@@ -9,7 +9,7 @@ from matplotlib import cm
 from matplotlib import pyplot as plt
 import random
 from colorama import Fore, Back, Style
-from classes import player, commandManager, stone, scissor, paper, spock, lizard
+from classes import player, eventManager as em, stone, scissor, paper, spock, lizard, computer
 from screeninfo import get_monitors
 
 def initPlayer(val):
@@ -21,54 +21,42 @@ def initItem(nr, msg="", p=None):
         case 1:
             if p != None: 
                 id = p.getID()
-                logEvent(id, "stone")
+                em.logEvent(id, "stone", True)
             return stone.Stone()
         case 2:
             if p != None:
                 id = p.getID()
-                logEvent(id, "scissor")
+                em.logEvent(id, "scissor", True)
             return scissor.Scissor()
         case 3:
             if p != None:
                 id = p.getID()
-                logEvent(id, "paper")
+                em.logEvent(id, "paper", True)
             return paper.Paper()
         case 4:
             if p != None:
                 id = p.getID()
-                logEvent(id, "lizard")
+                em.logEvent(id, "lizard", True)
             return lizard.Lizard()
         case 5:
             if p != None: 
                 id = p.getID()
-                logEvent(id, "spock")
+                em.logEvent(id, "spock", True)
             return spock.Spock()
 
 def checkMatch(nr, p):
     match nr:
         case -1:
-            logEvent(p.getID(), "lose")
+            em.logEvent(p.getID(), "lose")
             return Fore.LIGHTRED_EX + "You lost!"
         case 0:
-            logEvent(p.getID(), "draw")
+            em.logEvent(p.getID(), "draw")
             return Fore.LIGHTBLACK_EX + "It's a draw!"
         case 1:
-            logEvent(p.getID(), "win")
+            em.logEvent(p.getID(), "win")
             return Fore.LIGHTGREEN_EX + "You won!"
         case other:
             return "Something went wrong!"
-
-def getEvents():
-    with open("SWP-Python\SteinScherePapierEchseSpock\saves.txt", "r") as e:
-        return json.load(e)
-
-def logEvent(user_id, event):
-    events = getEvents()
-    events[user_id][event] += 1
-    
-    with open("SWP-Python\SteinScherePapierEchseSpock\saves.txt", "w") as e:
-        e.write(json.dumps(events))
-    return "Updated " + event + " to " + str(events[user_id][event])
                 
 def login(screen, clock):
     intro = pg.image.load("SWP-Python\SteinScherePapierEchseSpock\pics_gifs\intro.jpg").convert()
@@ -132,7 +120,7 @@ def difficulty(p, diff):
         case 0:
             return random.randint(1,5)
         case 1:
-            e = getEvents()
+            e = em.getEvents()
             print(list(e[p.getID()].values())[3:])
             print(list(e[p.getID()].values())[3:].index(max(list(e[p.getID()].values())[3:])))
             chosen = initItem(list(e[p.getID()].values())[3:].index(max(list(e[p.getID()].values())[3:]))+1)
@@ -154,6 +142,7 @@ def game(screen, clock, p, d):
         for event in pg.event.get():
             if event.type == pg.KEYDOWN:
                     if event.key == pg.K_ESCAPE:
+                        em.patternFile(False)
                         pg.quit()
                         sys.exit()
             if event.type == pg.MOUSEBUTTONDOWN:
@@ -193,7 +182,7 @@ def gradientbars(bars,ydata,cmap):
                   norm=cm.colors.NoNorm(vmin=0,vmax=1), cmap=plt.get_cmap(cmap)) 
             
 def stats(screen, clock, p, d):
-    e = getEvents()
+    e = em.getEvents()
     pStats = e[p.getID()]
     names = list(pStats.keys())
     values = list(pStats.values())
@@ -201,7 +190,7 @@ def stats(screen, clock, p, d):
     gradientbars(ax1.bar(names[:3], values[:3]), values[:3], "cool_r")
     plt.savefig("SWP-Python\SteinScherePapierEchseSpock\pics_gifs/outcomes.png")
     fig2, ax2 = plt.subplots()
-    gradientbars(ax2.bar(names[3:], values[3:]), values[3:], "cool_r")
+    gradientbars(ax2.bar(names[3:8], values[3:8]), values[3:8], "cool_r")
     plt.savefig("SWP-Python\SteinScherePapierEchseSpock\pics_gifs/items.png")
     game_btn = pg.Rect(screen.get_width()/8*6, screen.get_height()/16, screen.get_width()/12, screen.get_height()/16)
     screen.fill((255,255,255))
@@ -209,6 +198,7 @@ def stats(screen, clock, p, d):
         for event in pg.event.get():
             if event.type == pg.KEYDOWN:
                     if event.key == pg.K_ESCAPE:
+                        em.patternFile(False)
                         pg.quit()
                         sys.exit()
             if event.type == pg.MOUSEBUTTONDOWN:
@@ -242,12 +232,14 @@ def gameResult(screen, clock, pItem, cItem, out, p, d):
         for event in pg.event.get():
             if event.type == pg.KEYDOWN:
                     if event.key == pg.K_ESCAPE:
+                        em.patternFile(False)
                         pg.quit()
                         sys.exit()
                     elif event.key == pg.K_r:
                         return runGame(p, d)
             if event.type == pg.MOUSEBUTTONDOWN:
                 if exit_btn.collidepoint(event.pos):
+                    em.patternFile(False)
                     pg.quit()
                     sys.exit()                
                 elif restart_btn.collidepoint(event.pos):
@@ -267,6 +259,7 @@ def startGame():
     def start():
         runGame(player.get_value(), difficulty.get_value()[1])
     
+    em.patternFile(True)
     pg.init()
     size = get_monitors()[0].width, get_monitors()[0].height
     screen = pg.display.set_mode(size)
@@ -274,7 +267,7 @@ def startGame():
     menu = pygame_menu.Menu('Welcome', size[0]/2, size[1]/2,
                        theme=pygame_menu.themes.THEME_BLUE)
     player = menu.add.text_input('Name: ')
-    difficulty = menu.add.selector('Difficulty: ', [('Easy', 1), ('Medium', 2)])
+    difficulty = menu.add.selector('Difficulty: ', [('Easy', 1), ('Medium', 2), ("Hard", 3)])
     menu.add.button('Play', start)
     menu.add.button('Quit', pygame_menu.events.EXIT)
     menu.mainloop(screen)
@@ -287,12 +280,14 @@ def runGame(p, d):
     if player is None or isinstance(player, str):
         player = initPlayer(p)
     diff = d
-    chosenItem = initItem(game(screen, clock, player, difficulty), "", player)
-    computer = initItem(difficulty(player, diff))
-    print(chosenItem.itemName() + " vs " + computer.itemName())
-    outcome = (checkMatch(chosenItem.checkStats(computer.itemName()), player))
+    chosenItem = initItem(game(screen, clock, player, diff), "", player)
+    c = computer.Computer(diff)
+    print(c.calcMove(player))
+    computerItem = initItem(c.calcMove(player))
+    print(chosenItem.itemName() + " vs " + computerItem.itemName())
+    outcome = (checkMatch(chosenItem.checkStats(computerItem.itemName()), player))
     print(outcome)
-    gameResult(screen, clock, chosenItem.itemName(), computer.itemName(), outcome.split("m")[1], player, diff)
+    gameResult(screen, clock, chosenItem.itemName(), computerItem.itemName(), outcome.split("m")[1], player, diff)
 
 if __name__ == "__main__":
     startGame()

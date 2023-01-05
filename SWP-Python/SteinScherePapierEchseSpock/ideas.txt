@@ -1,7 +1,0 @@
-
-127.0.0.1 - - [18/Dec/2022 17:55:55] "GET / HTTP/1.1" 200 -
-['web', 'user', 'test']
-['server', 'user', 'known']
-127.0.0.1 - - [18/Dec/2022 17:56:01] "POST / HTTP/1.1" 200 -
-['web', 'play', 'test', '2']
-['server', 'play', '\x1b[91mYou lost!']
