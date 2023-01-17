@@ -10,12 +10,13 @@ import pdb
 import pandas as p
 import plotly
 import plotly.express as px
+from tkinter import filedialog as fd
 
 app = Flask(__name__)
 api = Api(app)
 
 def getStatistic():
-    with open("SWP-Python\SteinScherePapierEchseSpock\saves.txt", "r") as s:
+    with open("SWP-Python\SteinScherePapierEchseSpock/flask_saves.txt", "r") as s:
         return json.load(s)
 
 @app.route('/',methods=["GET", "POST"])
@@ -47,6 +48,14 @@ def start():
     
     if request.method == "GET":
         return render_template("main.html")
+    
+@app.route('/upload', methods=["GET","POST"])
+def upload():
+    if request.method == "POST":
+        file = json.load(fd.askopenfile())
+        with open("SWP-Python\SteinScherePapierEchseSpock/flask_saves.txt", "w") as flask:
+            flask.write(json.dumps(file))
+    return render_template("main.html")
 
 if __name__ == '__main__':
     webbrowser.open("http://localhost:5000")
