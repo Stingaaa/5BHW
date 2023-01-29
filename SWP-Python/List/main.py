@@ -7,6 +7,6 @@ if __name__ == "__main__":
         l.add(random.randint(0,100))
     print(l)
     print("Sorted:")
-    l.sort()
+    print(l.sort("merge"))
     splitList = l.split(7)
     print(splitList)

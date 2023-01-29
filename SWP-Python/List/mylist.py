@@ -1,8 +1,13 @@
+import math
+
 class Elem:
   # constructor
-  def __init__(self, data = None, next=None): 
-    self.data = data
-    self.next = next
+    def __init__(self, data = None, next=None): 
+        self.data = data
+        self.next = next
+
+    def __str__(self):
+        return str(self.data)
 
 # A Linked List class with a single head node
 class List:
@@ -51,8 +56,20 @@ class List:
             i += 1
         return i
     
+    def getItems(self, a, b):
+        items = List()
+        if b >= len(self):
+            b = len(self)
+        if a == b or a+1 == b:
+            return self[a]
+        for i in range(int(a), int(b)):
+            items.add(self[i].data)
+        return items
+
     def __getitem__(self, index):
         e = self.head
+        if index == -1:
+            return e
         while not self.index(e) == index:
             e = e.next
             if e == None:
@@ -60,12 +77,74 @@ class List:
                 break
         return e
     
-    def sort(self):
-        for i in range(len(self)):
-            for j in range(i+1,len(self)):
-                if self[i].data > self[j].data:
-                    self[i].data, self[j].data = self[j].data, self[i].data
-        print(self)
+    def sort(self, method="quick"):
+        def merge(a, b):
+            merged = List()
+            if type(a) != List and type(b) != List:
+                if a.data > b.data:
+                    merged.add(b.data)
+                    merged.add(a.data)
+                else:
+                    merged.add(b.data)
+                    merged.add(a.data)
+                print(merged)
+                return merged
+            elif type(a) != List:
+                posB = 0
+                b.add(int(math.pow(10, 100)))
+                for i in range(len(b)+1):
+                    if a.data > b[posB].data.data:
+                        merged.add(b[posB])
+                        posB += 1
+                    elif a.data < b[posB].data.data:
+                        merged.add(a)
+                        a = Elem(int(math.pow(10, 100)))
+            elif type(b) != List:
+                posA = 0
+                a.add(int(math.pow(10, 100)))
+                for i in range(len(a)+1):
+                    if a[posA].data.data > b.data:
+                        merged.add(a[posA])
+                        posA += 1
+                    elif a[posA].data.data < b.data:
+                        merged.add(b)
+                        b = Elem(int(math.pow(10, 100)))
+            else:
+                posA, posB = 0, 0
+                a.add(int(math.pow(10, 20))), b.add(int(math.pow(10, 20)))
+                for i in range(len(a)+len(b)):
+                    if a[posA].data > b[posB].data:
+                        merged.add(b[posB])
+                        posB += 1
+                    elif a[posA].data < b[posB].data:
+                        merged.add(a[posB])
+                        posA += 1
+                print(merged)
+                return merged
+
+
+
+        match method:
+            case "quick":
+                for i in range(len(self)):
+                    for j in range(i+1,len(self)):
+                        if self[i].data > self[j].data:
+                            self[i].data, self[j].data = self[j].data, self[i].data
+                return self
+            case "merge":
+                l = len(self)
+                cicles = int(math.log2(l)) if math.log2(l) == int(math.log2(l)) else int(math.log2(l))+1
+                for i in range(1, cicles+1):
+                    for j in range(int(l/(i*2))-1 if l/i*2 == int(l/(i*2)) else int(l/(i*2))):
+                        if(l >= j+1):
+                            a = self.getItems(int(j*math.pow(2,i)), int(j*math.pow(2,i)+2*int(math.pow(2,i-2))) + (1 if i == 1 else 0))
+                            b = self.getItems(int(j*math.pow(2,i)+2*int(math.pow(2,i-2))) + (1 if i == 1 else 0), int(j*math.pow(2,i)+4*int(math.pow(2,i-2))) + (1 if i == 1 else 0))
+                            merged = merge(a, b)
+                            for r in range(len(merged)):
+                                self[int(j*math.pow(2,i))+r].data = merged[r].data
+                            print(self)
+                return self
+                    
         
     def split(self, parts):
         l = len(self)
