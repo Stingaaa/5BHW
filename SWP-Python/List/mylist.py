@@ -32,9 +32,9 @@ class List:
                 break
         elemToDelete.next = elemToDelete.next.next
         
-    def len(self, start=None):
+    def __len__(self):
         l = 1
-        nextElem = self.head if start == None else start
+        nextElem = self.head
         while not nextElem.next == None:
             nextElem = nextElem.next
             l += 1
@@ -51,7 +51,7 @@ class List:
             i += 1
         return i
     
-    def elemAtIndex(self, index):
+    def __getitem__(self, index):
         e = self.head
         while not self.index(e) == index:
             e = e.next
@@ -61,14 +61,14 @@ class List:
         return e
     
     def sort(self):
-        for i in range(self.len()):
-            for j in range(i+1,self.len()):
-                if self.elemAtIndex(i).data > self.elemAtIndex(j).data:
-                    self.elemAtIndex(i).data, self.elemAtIndex(j).data = self.elemAtIndex(j).data, self.elemAtIndex(i).data
-        self.print()
+        for i in range(len(self)):
+            for j in range(i+1,len(self)):
+                if self[i].data > self[j].data:
+                    self[i].data, self[j].data = self[j].data, self[i].data
+        print(self)
         
     def split(self, parts):
-        l = self.len()
+        l = len(self)
         p = parts
         if parts > l:
             print("List only has ", l, " elements to split in it!")
@@ -77,8 +77,8 @@ class List:
         for i in range(parts):
             elemForPart = int(l/p)
             listPart = List()
-            for j in range(self.len()-l,self.len()-l+elemForPart):
-                listPart.add(self.elemAtIndex(j))
+            for j in range(len(self)-l,len(self)-l+elemForPart):
+                listPart.add(self[j])
             splitLists.add(listPart)
             p -= 1
             l -= elemForPart
@@ -97,7 +97,7 @@ class List:
         return info
 
   # print method for the linked list
-    def print(self):
+    def __str__(self):
         current = self.head
         info = "["
         while(current):
@@ -107,4 +107,4 @@ class List:
                 info += str(current.data) + ","
             current = current.next
         info = info[:-1] + "]"
-        print(info)
+        return info
