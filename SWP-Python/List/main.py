@@ -16,5 +16,7 @@ if __name__ == "__main__":
     print("\nShuffled:")
     print(l.shuffle())
     for i in range(90):
-        l.remove(l[0])
-    print("\n",l)
+        l.removeIndex(0)
+    print("\nRemoved\n",l,"\n\nInserted:")
+    splitList[0].insert(5,123)
+    print(splitList[0])
