@@ -86,6 +86,24 @@ class List:
     def __setitem__(self, index, val):
         e = self.elemAtIndex(index)
         e.data = val
+        
+    def contains(self, val):
+        e = self.head
+        for i in range(len(self)):
+            if e.data == val:
+                return True
+            e = e.next
+        return False
+    
+    def find(self, val):
+        e = self.head
+        index = 0
+        for i in range(len(self)):
+            if e.data == val:
+                return index
+            e = e.next
+            index += 1
+        return None
 
     def sort(self, method="bubble"):
         def merge(arr, l, m , r):
