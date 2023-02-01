@@ -14,26 +14,23 @@ class Elem:
 class List:
     def __init__(self):  
         self.head = None
+        self.last = None
 
     def elemAtIndex(self, index):
         elem = self.head
-        for i in range(index+1):
-            if i == index and elem.data != None:
-                return elem
+        for i in range(index):
             elem = elem.next
-        return "Index out of range"
+        return elem
   
   # insertion method for the linked list
     def add(self, data):
         newElem = Elem(data)
         if self.head != None:
-            l = len(self)
-            lastElem = self.elemAtIndex(len(self)-1)
-            if type(lastElem) == str:
-                return lastElem
-            lastElem.next = newElem
+            self.last.next = newElem
+            self.last = newElem
         else:
             self.head = newElem
+            self.last = newElem
 
     def insert(self, index, data):
         prevElem = self.elemAtIndex(index)
@@ -90,7 +87,64 @@ class List:
         e = self.elemAtIndex(index)
         e.data = val
 
-    def sort(self, method="quick"):
+    def sort(self, method="bubble"):
+        def merge(arr, l, m , r):
+            n1 = m - l + 1
+            n2 = r - m
+        
+            L = [0] * (n1)
+            R = [0] * (n2)
+        
+            for i in range(0, n1):
+                L[i] = arr[l + i]
+        
+            for j in range(0, n2):
+                R[j] = arr[m + 1 + j]
+        
+            i = 0     
+            j = 0     
+            k = l     
+        
+            while i < n1 and j < n2:
+                if L[i] <= R[j]:
+                    arr[k] = L[i]
+                    i += 1
+                else:
+                    arr[k] = R[j]
+                    j += 1
+                k += 1
+        
+            while i < n1:
+                arr[k] = L[i]
+                i += 1
+                k += 1
+        
+            while j < n2:
+                arr[k] = R[j]
+                j += 1
+                k += 1
+        
+        def mergeSort(arr, l, r):
+            if l < r:
+                m = l+(r-l)//2
+                mergeSort(arr, l, m)
+                mergeSort(arr, m+1, r)
+                merge(arr, l, m, r)
+
+        list = self.merge()
+        match method:
+            case "bubble":
+                for i in range(len(list)):
+                    for j in range(i+1,len(list)):
+                        if list[i] > list[j]:
+                            list[i], list[j] = list[j], list[i]
+                return list
+            case "merge":
+                l = len(list)
+                mergeSort(list, 0, l-1)
+                return list
+            
+    def sortMerge(self):
         def merge(a, b):
             merged = List()
             if a == None and b == None:
@@ -140,34 +194,29 @@ class List:
                         merged.add(a[posA])
                         posA += 1
                 return merged
-
-
-        match method:
-            case "quick":
-                for i in range(len(self)):
-                    for j in range(i+1,len(self)):
-                        if self[i].data > self[j].data:
-                            self[i].data, self[j].data = self[j].data, self[i].data
-                return self
-            case "merge":
-                l = len(self)
-                cicles = int(math.log2(l)) if math.log2(l) == int(math.log2(l)) else int(math.log2(l))+1
-                for i in range(0, cicles):
-                    for j in range(int(l/((i+1)*2))-1 if l/(i+1)*2 == int(l/((i+1)*2)) else int(l/((i+1)*2))):
-                        if(l >= j+1):
-                            a = self[int(j*math.pow(2,i+1)) : int(j*math.pow(2,i+1)+2*int(math.pow(2,i-1))) + (1 if i == 0 else 0)]
-                            b = self[int(j*math.pow(2,i+1)+2*int(math.pow(2,i-1))) + (1 if i == 0 else 0) : int(j*math.pow(2,i+1)+4*int(math.pow(2,i-1))) + (2 if i == 0 else 0)]
-                            merged = merge(a, b)
-                            for r in range(len(merged)):
-                                self[int(j*math.pow(2,i+1))+r] = merged[r]
-                return self
+            
+        list = self.merge()
+        l = len(list)
+        cicles = int(math.log2(l)) if math.log2(l) == int(math.log2(l)) else int(math.log2(l))+1
+        for i in range(0, cicles):
+            for j in range(int(l/((i+1)*2))-1 if l/(i+1)*2 == int(l/((i+1)*2)) else int(l/((i+1)*2))):
+                if(l >= j+1):
+                    a = list[int(j*math.pow(2,i+1)) : int(j*math.pow(2,i+1)+2*int(math.pow(2,i-1))) + (1 if i == 0 else 0)]
+                    b = list[int(j*math.pow(2,i+1)+2*int(math.pow(2,i-1))) + (1 if i == 0 else 0) : int(j*math.pow(2,i+1)+4*int(math.pow(2,i-1))) + (2 if i == 0 else 0)]
+                    merged = merge(a, b)
+                    for r in range(len(merged)):
+                        list[int(j*math.pow(2,i+1))+r] = merged[r]
+        return list
                     
     def split(self, parts):
         l = len(self)
         p = parts
         if parts > l:
             print("List only has ", l, " elements to split in it!")
-            return
+            return self
+        if parts == 0:
+            print("Cant split list into 0 parts!")
+            return self
         splitLists = List()
         for i in range(parts):
             elemForPart = int(l/p)
@@ -178,6 +227,16 @@ class List:
             p -= 1
             l -= elemForPart
         return splitLists  
+    
+    def merge(self):
+        list = List()
+        for i in range(len(self)):
+            if type(self[i]) == List:
+                for j in range(len(self[i])):
+                    list.add(self[i][j])
+            else:
+                list.add(self[i])
+        return list
     
     def shuffle(self):
         for i in range(len(self)):
