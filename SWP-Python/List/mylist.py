@@ -73,25 +73,16 @@ class List:
                 return
             i += 1
         return i
-    
-    def getItems(self, a, b):
-        items = List()
-        if a >= len(self):
-            return None
-        if b >= len(self):
-            b = len(self)
-        if a == b or a+1 == b:
-            return self[a] if self[a] != None else None
-        for i in range(int(a), int(b)):
-            items.add(self[i])
-        return items
 
     def __getitem__(self, index):
         if type(index) == slice:
             items = List()
-            for i in range(index.start, index.stop):
-                items.add(self.elemAtIndex(i))
-            return items
+            if index.start < len(self):
+                for i in range(index.start, index.stop if index.stop < len(self) else len(self)):
+                    items.add(self[i])
+                return items
+            else:
+                return None
         e = self.elemAtIndex(index)
         return e.data
     
@@ -164,8 +155,8 @@ class List:
                 for i in range(0, cicles):
                     for j in range(int(l/((i+1)*2))-1 if l/(i+1)*2 == int(l/((i+1)*2)) else int(l/((i+1)*2))):
                         if(l >= j+1):
-                            a = self.getItems(int(j*math.pow(2,i+1)), int(j*math.pow(2,i+1)+2*int(math.pow(2,i-1))) + (1 if i == 0 else 0))
-                            b = self.getItems(int(j*math.pow(2,i+1)+2*int(math.pow(2,i-1))) + (1 if i == 0 else 0), int(j*math.pow(2,i+1)+4*int(math.pow(2,i-1))) + (1 if i == 0 else 0))
+                            a = self[int(j*math.pow(2,i+1)) : int(j*math.pow(2,i+1)+2*int(math.pow(2,i-1))) + (1 if i == 0 else 0)]
+                            b = self[int(j*math.pow(2,i+1)+2*int(math.pow(2,i-1))) + (1 if i == 0 else 0) : int(j*math.pow(2,i+1)+4*int(math.pow(2,i-1))) + (2 if i == 0 else 0)]
                             merged = merge(a, b)
                             for r in range(len(merged)):
                                 self[int(j*math.pow(2,i+1))+r] = merged[r]
