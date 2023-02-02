@@ -14,7 +14,6 @@ class Elem:
 class List:
     def __init__(self):  
         self.head = None
-        self.last = None
 
     def elemAtIndex(self, index):
         elem = self.head
@@ -25,12 +24,13 @@ class List:
   # insertion method for the linked list
     def add(self, data):
         newElem = Elem(data)
-        if self.head != None:
-            self.last.next = newElem
-            self.last = newElem
+        elem = self.head
+        if elem != None:
+            for i in range(len(self)-1):
+               elem = elem.next 
+            elem.next = newElem
         else:
             self.head = newElem
-            self.last = newElem
 
     def insert(self, index, data):
         prevElem = self.elemAtIndex(index)

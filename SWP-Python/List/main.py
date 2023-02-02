@@ -1,10 +1,10 @@
 import random
 import time
-import mylist
+import singleChainedList
 
 if __name__ == "__main__":
     start = time.time()
-    l = mylist.List()
+    l = singleChainedList.List()
     for i in range(1000):
         l.add(random.randint(0,100))
     print(l)
