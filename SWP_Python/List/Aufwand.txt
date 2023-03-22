@@ -1,0 +1,7 @@
+            Single Linked   |   Double Linked   |   ArrayList
+append          n                   1                   n
+elem at n       n                   n                   1
+last elem       n                   1                   1
+len             n                   n                   1
+remove          n                   n                   n
+remove at       n                   n                   n
