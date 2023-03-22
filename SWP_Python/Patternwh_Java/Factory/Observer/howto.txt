@@ -1,0 +1,2 @@
+PUSH ... man gibt in der notify sofort die parameter mit
+PULL ... die notify erhält keine parameter und ruft selber einen getter auf
