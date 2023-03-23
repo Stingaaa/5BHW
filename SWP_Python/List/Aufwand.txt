@@ -2,9 +2,8 @@
 append          n                   1                   n
 append at       n                   n                   n
 first elem      1                   1                   1
-elem at n       n                   n                   n
-last elem       n                   1                   n
+elem at n       n                   n                   1
+last elem       n                   1                   1
 len             n                   n                   n
-remove          n                   n                   n
-remove at       n                   n                   n
-remove last     n                   1                   n
+remove index    n                   n                   1
+remove elem     n                   n                   n

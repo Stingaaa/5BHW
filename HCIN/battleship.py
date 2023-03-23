@@ -47,14 +47,14 @@ def checkCollision(field, ship):
     for i in range(ship.length):
         match ship.positioning:
             case Positions.horizontal:
-                if ship.pos[1]+i > len(field)-1:
-                    return True
-                if field[ship.pos[0]][ship.pos[1]+i] == "x" or field[ship.pos[0]][ship.pos[1]+i+1 if ship.pos[1]+i < 9 else ship.pos[1]+i] == "x" or field[ship.pos[0]][ship.pos[1]+i-1 if ship.pos[1]+i > 0 else ship.pos[1]+i] == "x" or field[ship.pos[0]+1 if ship.pos[0] < 9 else 9][ship.pos[1]+i] == "x" or field[ship.pos[0]-1 if ship.pos[0] > 0 else 0][ship.pos[1]+i] == "x":
-                    return True
-            case Positions.vertical:
                 if ship.pos[0]+i > len(field)-1:
                     return True
-                if field[ship.pos[0]+i][ship.pos[1]] == "x" or field[ship.pos[0]+i+1 if ship.pos[0]+i < 9 else ship.pos[0]+i][ship.pos[1]] == "x" or field[ship.pos[0]+i-1 if ship.pos[0]+i > 0 else ship.pos[0]+i][ship.pos[1]] == "x" or field[ship.pos[0]+i][ship.pos[1]+1 if ship.pos[1] < 9 else 9] == "x" or field[ship.pos[0]+i][ship.pos[1]-1 if ship.pos[0] > 0 else 0] == "x":
+                if field[ship.pos[1]][ship.pos[0]+i] == "x" or field[ship.pos[1]][ship.pos[0]+i+1 if ship.pos[0]+i < 9 else ship.pos[0]+i] == "x" or field[ship.pos[1]][ship.pos[0]+i-1 if ship.pos[0]+i > 0 else ship.pos[0]+i] == "x" or field[ship.pos[1]+1 if ship.pos[1] < 9 else 9][ship.pos[0]+i] == "x" or field[ship.pos[1]-1 if ship.pos[1] > 0 else 0][ship.pos[0]+i] == "x":
+                    return True
+            case Positions.vertical:
+                if ship.pos[1]+i > len(field)-1:
+                    return True
+                if field[ship.pos[1]+i][ship.pos[0]] == "x" or field[ship.pos[1]+i+1 if ship.pos[1]+i < 9 else ship.pos[1]+i][ship.pos[0]] == "x" or field[ship.pos[1]+i-1 if ship.pos[1]+i > 0 else ship.pos[1]+i][ship.pos[0]] == "x" or field[ship.pos[1]+i][ship.pos[0]+1 if ship.pos[0] < 9 else 9] == "x" or field[ship.pos[1]+i][ship.pos[0]-1 if ship.pos[0] > 0 else 0] == "x":
                     return True
     return False
 
@@ -67,13 +67,13 @@ def addToField(screen, field, list, ship, botOn=False, cnt=None):
     for i in range(ship.length):
         match ship.positioning:
             case Positions.vertical:
-                field[ship.pos[0]+i][ship.pos[1]] = "x"
-                positions.append((ship.pos[0]+i, ship.pos[1]))
-                if not botOn: pygame.draw.rect(screen, (200,100,150), pygame.Rect(ship.pos[1]*50+50, (ship.pos[0]+i)*50+50, 50, 50))
+                field[ship.pos[1]+i][ship.pos[0]] = "x"
+                positions.append((ship.pos[1]+i, ship.pos[0]))
+                if not botOn: pygame.draw.rect(screen, (200,100,150), pygame.Rect(ship.pos[0]*50+50, (ship.pos[1]+i)*50+50, 50, 50))
             case Positions.horizontal:
-                field[ship.pos[0]][ship.pos[1]+i] = "x"
-                positions.append((ship.pos[0], ship.pos[1]+i))
-                if not botOn: pygame.draw.rect(screen, (200,100,150), pygame.Rect((ship.pos[1]+i)*50+50, ship.pos[0]*50+50, 50, 50))
+                field[ship.pos[1]][ship.pos[0]+i] = "x"
+                positions.append((ship.pos[1], ship.pos[0]+i))
+                if not botOn: pygame.draw.rect(screen, (200,100,150), pygame.Rect((ship.pos[0]+i)*50+50, ship.pos[1]*50+50, 50, 50))
         drawGrid(screen)
         if botOn == False:
             pygame.display.update()
@@ -108,46 +108,50 @@ def setShips(screen, playingField, list, botOn, cnt=6):
     if cnt > 4:
         pygame.event.get()
         p = input("Position (x-y): ").split("-")
-        pos = int(p[1]), ord(p[0])-65
+        pos = ord(p[0])-65, int(p[1])
         direction = Positions.vertical if int(input("Direction (vert. = 0; hor. = 1): ")) == 0 else Positions.horizontal
         s = small_ship(pos, direction)
         addToField(screen, playingField, list, s, False, cnt-1)
     elif cnt > 3:
         pygame.event.get()
         p = input("Position (x-y): ").split("-")
-        pos = int(p[1]), ord(p[0])-65
+        pos = ord(p[0])-65, int(p[1])
         direction = Positions.vertical if int(input("Direction (vert. = 0; hor. = 1): "))  == 0 else Positions.horizontal
         s = medium_ship(pos, direction)
         addToField(screen, playingField, list, s, False, cnt-1)
     elif cnt > 1:
         pygame.event.get()
         p = input("Position (x-y): ").split("-")
-        pos = int(p[1]), ord(p[0])-65
+        pos = ord(p[0])-65, int(p[1])
         direction = Positions.vertical if int(input("Direction (vert. = 0; hor. = 1): "))  == 0 else Positions.horizontal
         s = big_ship(pos, direction)
         addToField(screen, playingField, list, s, False, cnt-1)
     elif cnt > 0:
         pygame.event.get()
         p = input("Position (x-y): ").split("-")
-        pos = int(p[1]), ord(p[0])-65
+        pos = ord(p[0])-65, int(p[1])
         direction = Positions.vertical if int(input("Direction (vert. = 0; hor. = 1): "))  == 0 else Positions.horizontal
         s = huge_ship(pos, direction)
         addToField(screen, playingField, list, s, False, cnt-1)
     return
 
 def attack(pos, screen, field, list, hitlist, bot):
-    if pos not in hitlist:
+    if (pos[1],pos[0]) not in hitlist:
         for i in range(len(list)):
             for j in range(len(list[i].pos)):
-                if pos == list[i].pos[j]:
+                if (pos[1], pos[0]) == list[i].pos[j]:
                     list[i].hits += 1
-                    hitlist.append(pos)
-                    if bot == False: pygame.draw.rect(screen, (50,230,100), pygame.Rect(pos[0]*50+1050, pos[1]*50+50, 50, 50))
-                    else: pygame.draw.rect(screen, (50,230,100), pygame.Rect((pos[0])*50+50, pos[1]*50+50, 50, 50))
+                    hitlist.append((pos[1], pos[0]))
+                    if bot == False:
+                        pygame.draw.rect(screen, (50,230,100), pygame.Rect((pos[0]*50)+1050, (pos[1]*50)+50, 50, 50))
+                    else:
+                        pygame.draw.rect(screen, (50,230,100), pygame.Rect((pos[0]*50)+50, (pos[1]*50)+50, 50, 50))
                     return
-        hitlist.append(pos)
-        if bot == False: pygame.draw.rect(screen, (10,10,10), pygame.Rect((pos[0])*50+1050, pos[1]*50+50, 50, 50))
-        else: pygame.draw.rect(screen, (10,10,10), pygame.Rect((pos[0])*50-50, pos[1]*50+50, 50, 50))
+        hitlist.append((pos[1], pos[0]))
+        if bot == False:
+            pygame.draw.rect(screen, (10,10,10), pygame.Rect((pos[0]*50)+1050, (pos[1]*50)+50, 50, 50))
+        else:
+            pygame.draw.rect(screen, (10,10,10), pygame.Rect((pos[0]*50)+50, (pos[1]*50)+50, 50, 50))
     else:
         if bot == True:
             attack((random.randint(0,9), random.randint(0,9)), screen, field, list, hitlist, bot)
@@ -178,9 +182,7 @@ def checkGame(list, enemyList):
 def main():
     gameState = True
     playingField = initField()
-    shootingField = initField()
     enemyField = initField()
-    enemyShootingField = initField()
     shipList = []
     enemyShipList = []
     userHitlist = []
@@ -204,7 +206,10 @@ def main():
                         p = input("Position to attack: ").split("-")
                         pos = ord(p[0])-65, int(p[1])
                         attack(pos, screen, enemyField, enemyShipList, userHitlist, False)
+                        #For demonstration purposes
+                        #attack((random.randint(0,9), random.randint(0,9)), screen, enemyField, enemyShipList, userHitlist, False)
                         attack((random.randint(0,9), random.randint(0,9)), screen, playingField, shipList, enenemyHitlist, True)
+                        print("Attack")
         drawGrid(screen)
         pygame.display.update()
     
