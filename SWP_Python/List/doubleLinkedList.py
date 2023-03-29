@@ -23,7 +23,6 @@ class List:
             elem = elem.next
         return elem
   
-  # insertion method for the linked list
     def add(self, data):
         newElem = Elem(data)
         if self.head == None:

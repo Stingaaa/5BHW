@@ -1,6 +1,6 @@
 import random
 import time
-import singleLinkedList, doubleLinkedList
+import singleLinkedList, doubleLinkedList, arraylist
 
 if __name__ == "__main__":
     # start = time.time()
@@ -14,7 +14,7 @@ if __name__ == "__main__":
     # splitList = l.split(29)
     # print(splitList)
     # print("\nSorted:")
-    # print(l.sort("merge"))  #or .sortMerge() => own logic
+    # print(l.sort("merge"))  #or .sortMerge()
     # print("\nShuffled:")
     # print(l.shuffle())
     # for i in range(990):
@@ -29,9 +29,23 @@ if __name__ == "__main__":
     # end = time.time()
     # print((end-start)*1000)
     
-    l2 = doubleLinkedList.List()
-    for i in range(1000):
-        l2.add(random.randint(0,500))
-    print(l2)
-    print("\nSorted:")
-    print(l2.sort("merge"))  #or .sortMerge() => own logic
+    # l2 = doubleLinkedList.List()
+    # for i in range(1000):
+    #     l2.add(random.randint(0,500))
+    # print(l2)
+    # print("\nSorted:")
+    # print(l2.sort("merge"))  #or .sortMerge()
+    
+    arraylist = arraylist.ArrayList()
+
+    for i in range(9):
+        arraylist.append(i)
+
+    print("arraylist")
+    print(arraylist)
+    print("len: ",len(arraylist))
+    print("size: ",arraylist.size)
+    print("remove")
+    arraylist.remove(7)
+    print(arraylist)
+    print("size: ",arraylist.size)

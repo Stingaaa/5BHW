@@ -60,18 +60,3 @@ class ArrayList():
         info = (info[:-1] if len(info) > 1 else info) + "]"
 
         return info
-
-if __name__ == "__main__":
-    arraylist = ArrayList()
-
-    for i in range(9):
-        arraylist.append(i)
-
-    print("arraylist")
-    print(arraylist)
-    print("len: ",len(arraylist))
-    print("size: ",arraylist.size)
-    print("remove")
-    arraylist.remove(7)
-    print(arraylist)
-    print("size: ",arraylist.size)
