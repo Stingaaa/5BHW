@@ -1,9 +1,9 @@
-            Single Linked   |   Double Linked   |   ArrayList
-append          n                   1                   n
-append at       n                   n                   n
-first elem      1                   1                   1
-elem at n       n                   n                   1
-last elem       n                   1                   1
-len             n                   n                   n
-remove index    n                   n                   1
-remove elem     n                   n                   n
+            Single Linked   |   Double Linked   |   "ArrayList" | ArrayList
+append          n                   1                   n           1
+append at       n                   n                   n           1
+first elem      1                   1                   1           1
+elem at n       n                   n                   n           1
+last elem       n                   1                   n           1
+len             n                   n                   n           1
+remove index    n                   n                   n           1
+remove elem     n                   n                   n           n

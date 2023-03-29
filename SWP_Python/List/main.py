@@ -38,7 +38,7 @@ if __name__ == "__main__":
     
     arraylist = arraylist.ArrayList()
 
-    for i in range(9):
+    for i in range(11):
         arraylist.append(i)
 
     print("arraylist")
@@ -48,4 +48,5 @@ if __name__ == "__main__":
     print("remove")
     arraylist.remove(7)
     print(arraylist)
+    print("len: ", len(arraylist))
     print("size: ",arraylist.size)
