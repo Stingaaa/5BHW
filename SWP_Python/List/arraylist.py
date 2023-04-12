@@ -5,7 +5,7 @@ class ArrayList():
 
     def append(self, data):
         def append_wrapper():
-            if len(self.arr) < self.size:
+            if len(self) < self.size:
                 self.arr.append(data)
                 return True
             else: return False
@@ -17,7 +17,7 @@ class ArrayList():
     
     def removeIndex(self, index):
         def remove_wrapper():
-            self.arr.remove(index)
+            self.arr.remove(self.arr[index])
             if len(self) <= self.size/2:
                 return False
             return True
@@ -27,9 +27,7 @@ class ArrayList():
             
     def remove(self, data):
         def remove_wrapper():
-            for i in range(len(self)-1):
-                if self.arr[i] == data:
-                    self.removeIndex(i)
+            self.arr.remove(data)
             if len(self) <= self.size/2:
                 return False
             return True
@@ -38,10 +36,7 @@ class ArrayList():
             self.size /= 2
                 
     def __len__(self):
-        l = 0
-        for i in self.arr:
-            l += 1
-        return l
+        return len(self.arr)
 
     def __str__(self):
         info = "["
